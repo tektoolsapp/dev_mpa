@@ -1,0 +1,41 @@
+{% extends 'templates/app.twig' %}
+
+{% block content %}
+
+    <h1>Events</h1>
+    <ul style="padding: 0;list-style: none;">
+        <li><a href="{{ path_for('event.new') }}">New Event</a></li>
+    </ul>
+
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th style="width: 5%">ID</th>
+            <th style="width: 20%">Event Name</th>
+            <th style="width: 50%">Event Description</th>
+            <th style="width: 25%">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for key, value in events %}
+
+            <tr>
+                <td>{{ value.id }}</td>
+                <td>{{ value.event_name }}</td>
+                <td>{{ value.event_description}}</td>
+                <td><a href="{{ path_for('event.get', {'id': value.id} ) }}">Edit</a>
+                &nbsp;&nbsp;<a href="{{ path_for('event.attendees', {'id': value.id} ) }}">Attendees</a>
+                &nbsp;&nbsp;<a href="{{ path_for('event.planning', {'id': value.id} ) }}">Planning</a>
+                </td>
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+    <div class="mt-12" style="text-align:right;">{{ users.links | raw }}</div>
+
+
+{% endblock %}

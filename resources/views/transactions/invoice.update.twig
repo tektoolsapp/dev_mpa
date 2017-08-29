@@ -1,0 +1,255 @@
+{% extends 'templates/app.twig' %}
+{% block content %}
+
+    {{ invoice | json_encode }}
+    {#{ mode }#}
+
+    {#{  errors | json_encode }#}
+    {#{  member | json_encode }#}
+    {#{ contacts | json_encode }#}
+    {#{  activity_types | json_encode }#}
+    {#{  old | json_encode }#}
+    {#{ filter_query | json_encode }#}
+
+    {{ invoice | json_encode }}
+
+    {% set var_set_header = mode == 'add' ? 'Add New' : 'Edit Existing' %}
+    {% set var_set_save_location = mode == 'add' ? 'member.add' : '.edit' %}
+    {% set var_set_save_attr = mode == 'add' ? '' : ", 'id': member.id" %}
+    {% set var_set_save_btn = mode == 'add' ? 'Add Member' : 'Save Changes' %}
+    {% set var_set_save_cancel = mode == 'add' ? 'cancel_add' : 'cancel_edit' %}
+
+    {#{ var_set_save_location }#}
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Invoice # {{ invoice.id }}</div>
+                    <div class="panel-body">
+                        <form action="" id="invoice_update" method="post" autocomplete="off">
+
+                            <div class="row">
+                                {# INVOICE DATE #}
+                                {% set var_invoice_date = old.invoice_date is defined ? old.invoice_date : invoice.invoice_date %}
+                                <div class="col-lg-2">
+                                    <div class="form-group{{ errors.invoice_date ? ' has-error' : '' }} required">
+                                        <label class="control-label" for="invoice_date">Date</label>
+                                        <input type="text" name="invoice_date" class="form-control" value="{{ var_invoice_date }}">
+                                        {% if errors.business_name %}
+                                            <span class="help-block">{{ errors.invoice_date | first }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                {# INVOICE ORDER #}
+                                {% set var_order_id = old.order_id is defined ? old.order_id : invoice.order_id %}
+                                <div class="col-lg-2">
+                                    <div class="form-group{{ errors.order_id ? ' has-error' : '' }} required">
+                                        <label class="control-label" for="order_id">Order #</label>
+                                        <input type="text" name="order_id" class="form-control" value="{{ var_order_id }}">
+                                        {% if errors.business_name %}
+                                            <span class="help-block">{{ errors.order_id | first }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                {# INVOICE TYPE #}
+                                {% set var_customer_id = old.customer_id is defined ? old.customer_id : invoice.customer_id %}
+                                <div class="col-lg-3">
+                                    <div class="form-group{{ errors.invoice_type ? ' has-error' : '' }} required">
+                                        <label class="control-label" for="invoice_type">Invoice Type</label>
+                                        <input type="text" name="invoice_type" class="form-control" value="{{ var_invoice_type }}">
+                                        {% if errors.invoice_type %}
+                                            <span class="help-block">{{ errors.invoice_type | first }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                {# INVOICE TYPE #}
+                                {% set var_customer_id = old.customer_id is defined ? old.customer_id : invoice.customer_id %}
+                                <div class="col-lg-3">
+                                    <div class="form-group{{ errors.invoice_type ? ' has-error' : '' }} required">
+                                        <label class="control-label" for="invoice_type">Payment Terms</label>
+                                        <input type="text" name="invoice_type" class="form-control" value="{{ var_invoice_type }}">
+                                        {% if errors.invoice_type %}
+                                            <span class="help-block">{{ errors.invoice_type | first }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+                                {# INVOICE CUSTOMER #}
+                                {% set var_customer_id = old.customer_id is defined ? old.customer_id : invoice.customer_id %}
+                                <div class="col-lg-4">
+                                    <div class="form-group{{ errors.customer_id ? ' has-error' : '' }} required">
+                                        <label class="control-label" for="customer_id">Customer</label>
+                                        <input type="text" name="customer_id" class="form-control" value="{{ var_customer_id }}">
+                                        {% if errors.customer_id %}
+                                            <span class="help-block">{{ errors.customer_id | first }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+                                {# INVOICE ADDRESS 1 #}
+                                {% set var_customer_id = old.customer_id is defined ? old.customer_id : invoice.customer_id %}
+                                <div class="col-lg-4">
+                                    <div class="form-group{{ errors.customer_id ? ' has-error' : '' }} required">
+                                        <label class="control-label" for="customer_id">Billing Address 1</label>
+                                        <input type="text" name="customer_id" class="form-control" value="{{ var_customer_id }}">
+                                        {% if errors.customer_id %}
+                                            <span class="help-block">{{ errors.customer_id | first }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                {# INVOICE DATE #}
+                                {% set var_invoice_date = old.invoice_date is defined ? old.invoice_date : invoice.invoice_date %}
+                                <div class="col-lg-4">
+                                    <div class="form-group{{ errors.invoice_date ? ' has-error' : '' }} required">
+                                        <label class="control-label" for="invoice_date">Street Address 2</label>
+                                        <input type="text" name="invoice_date" class="form-control" value="{{ var_invoice_date }}">
+                                        {% if errors.business_name %}
+                                            <span class="help-block">{{ errors.invoice_date | first }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                {# INVOICE TYPE #}
+                                {% set var_customer_id = old.customer_id is defined ? old.customer_id : invoice.customer_id %}
+                                <div class="col-lg-3">
+                                    <div class="form-group{{ errors.invoice_type ? ' has-error' : '' }} required">
+                                        <label class="control-label" for="invoice_type">Suburb</label>
+                                        <input type="text" name="invoice_type" class="form-control" value="{{ var_invoice_type }}">
+                                        {% if errors.invoice_type %}
+                                            <span class="help-block">{{ errors.invoice_type | first }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+                                {# INVOICE TYPE #}
+                                {% set var_customer_id = old.customer_id is defined ? old.customer_id : invoice.customer_id %}
+                                <div class="col-lg-2">
+                                    <div class="form-group{{ errors.invoice_type ? ' has-error' : '' }} required">
+                                        <label class="control-label" for="invoice_type">State</label>
+                                        <input type="text" name="invoice_type" class="form-control" value="{{ var_invoice_type }}">
+                                        {% if errors.invoice_type %}
+                                            <span class="help-block">{{ errors.invoice_type | first }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                {# INVOICE TYPE #}
+                                {% set var_customer_id = old.customer_id is defined ? old.customer_id : invoice.customer_id %}
+                                <div class="col-lg-2">
+                                    <div class="form-group{{ errors.invoice_type ? ' has-error' : '' }} required">
+                                        <label class="control-label" for="invoice_type">Post Code</label>
+                                        <input type="text" name="invoice_type" class="form-control" value="{{ var_invoice_type }}">
+                                        {% if errors.invoice_type %}
+                                            <span class="help-block">{{ errors.invoice_type | first }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+
+                                {# INVOICE DESCRIPTION #}
+                                {% set var_invoice_description = old.invoice_description is defined ? old.invoice_description : invoice.invoice_description %}
+                                <div class="col-lg-12">
+                                    <div class="form-group{{ errors.invoice_description ? ' has-error' : '' }} required">
+                                        <label class="control-label" for="invoice_description">Description</label>
+                                        <textarea rows="5" name="invoice_description" class="form-control" >{{ var_invoice_description }}</textarea>
+                                        {% if errors.business_name %}
+                                            <span class="help-block">{{ errors.invoice_description | first }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="well">
+                                        <table class="table">
+                                            <thead style="border:0px solid red;">
+                                            <tr>
+                                                <th class="invoice_item_centre" style="width:68%">Item</th>
+                                                <th class="invoice_item_centre" style="width:8%">Quantity</th>
+                                                <th class="invoice_item_centre" style="width:12%">Price $</th>
+                                                <th class="invoice_item_centre" style="width:12%">Total $</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {#% for item in basket.all %#}
+                                            {% for item in invoice.items %}
+                                                <tr>
+                                                    <td class="invoice_item_left"><a href="{{ path_for('products') }}">{{ item.product_desc }}</a></td>
+                                                    <td class="invoice_item_right">
+                                                        <form action="{{ path_for('cart.update', { slug: item.slug }) }}" method="post">
+                                                            <select name="quantity" class="form-control input-sm">
+                                                                {% for num in 0..item.stock %}
+                                                                    <option value="{{ num }}"{% if num == item.quantity %} selected="selected"{% endif %}>{{ num }}</option>
+                                                                {% endfor %}
+                                                                <option value="0">None</option>
+                                                            </select>
+                                                        </form>
+                                                    </td>
+                                                    <td class="invoice_item_right">{{ item.price | number_format(2) }}</td>
+                                                    <td class="invoice_item_right">{{ item.sub_total | number_format(2) }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                            <tr>
+                                                <td class="invoice_item_left_empty">&nbsp;</td>
+                                                <td class="invoice_item_left_empty">&nbsp;</td>
+                                                <td class="invoice_item_right" style="font-weight:bold;">Sub-total</td>
+                                                <td class="invoice_item_right">{{ invoice.total | number_format(2) }}</td>
+                                            </tr>
+
+                                            <tr>
+                                                <td class="invoice_item_left_empty">&nbsp;</td>
+                                                <td class="invoice_item_left_empty">&nbsp;</td>
+                                                <td class="invoice_item_right" style="font-weight:bold;">GST</td>
+                                                <td class="invoice_item_right">{{ invoice.gst |number_format(2) }}</td>
+                                            </tr>
+
+                                            <tr>
+                                                <td class="invoice_item_left_empty">&nbsp;</td>
+                                                <td class="invoice_item_left_empty">&nbsp;</td>
+                                                <td class="invoice_item_right" style="font-weight:bold;">TOTAL</td>
+                                                <td class="invoice_item_right">{{ invoice.grand_total |number_format(2) }}</td>
+                                            </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <input type="hidden" name="invoice_mode" id="invoice_mode" value="{{ mode }}">
+                            <input type="hidden" name="invoice_id" id="invoice_id" value="{{ invoice.id }}">
+                            <input type="hidden" name="invoices_filter_query" id="invoices_filter_query" value="{{ filter_query }}">
+
+                            {{ csrf.field | raw}}
+
+                        </form>
+
+                        <div class="pull-right" >
+                            <button type="submit" id="submit_invoice_new" class="btn btn-primary">{{ var_set_save_btn }}</button>
+                            <button type="button" class="btn btn-default" id="{{ var_set_save_cancel }}">Cancel</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

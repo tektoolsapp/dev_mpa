@@ -1,0 +1,129 @@
+{% extends 'templates/app.twig' %}
+{% block content %}
+
+    {% if flash.error %}
+        {% for error in flash %}
+            <div class="alert alert-danger">
+                {{ error }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <h2>Invoices</h2>
+
+    <div class="row">
+        <form action="{{ path_for('invoices.bydate')}}" method="POST" autocomplete="off">
+            <div class="col-lg-1" style="width:60px;padding-right:0px;border:0px solid;">From:</div>
+            <div class="col-lg-2">
+                {% set var_from_date = old.from_date is defined ? old.from_date : start %}
+                <div class="form-group{{ errors.from_date ? ' has-error' : '' }} required">
+                    <input type="text" name="from_date" id="from_date" class="form-control date_start" value="{{ var_from_date }}">
+                    {% if errors.from_date %}
+                        <span class="help-block">{{ errors.from_date | first }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-1" style="width:30px;">To:</div>
+            <div class="col-lg-2">
+                {% set var_to_date = old.to_date is defined ? old.to_date : end %}
+                <div class="form-group{{ errors.to_date ? ' has-error' : '' }} required">
+                    <input type="text" name="to_date" id="to_date" class="form-control date_end" value="{{ var_to_date }}">
+                    {% if errors.to_date %}
+                        <span class="help-block">{{ errors.to_date | first }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            <input type="hidden" name="update_dates" id="update_dates" value="Y">
+            <button type="submit" id="set_date_range" class="btn btn-primary">Update</button>
+        </form>
+    </div>
+
+    <div style="clear:both"></div>
+
+    <div class="row">
+        <div class="col-lg-6" style="border:0px solid;"><h4>({{ invoice_count }} of {{ invoice_total }} results displayed)</h4></div>
+        <div class="col-lg-4 col-margin" style="border:0px solid;text-align:right;">
+            <input type="text" class="form-control" id="select_customer" placeholder="Search by Customer Name">
+        </div>
+        <div class="col-lg-2 noleftpadding" style="border:0px solid;text-align:right;">
+            <div class="form-group dropdown">
+                <button class="btn btn-default dropdown-toggle" style="width:100%!important;" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    Display Options
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    <li><a href="#" id="filter_members">Filter Invoice Display</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="#">Separated link</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    {% if invoices|length > 0 %}
+
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th style="width: 10%">Invoice #</th>
+            <th style="width: 10%">MYOB Inv. #</th>
+            <th style="width: 10%">Inv. Date</th>
+            <th style="width: 15%">Customer</th>
+            <th style="width: 12%">Invoice Type</th>
+            <th style="width: 10%">Status</th>
+            <th style="width: 8%;text-align:center;">Export</th>
+            <th style="width: 8%;text-align:center;">Emailed</th>
+            <th style="width: 17%">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for key, value in invoices %}
+
+            {#
+            {% if value.invoice_status == 'N' %}
+                {% set var_export_checked = '' %}
+                {% set var_export_disabled = '' %}
+            {%elseif old.invoice_status == 'N' %}
+                {% set var_export_checked = '' %}
+                {% set var_export_disabled = '' %}
+            {%else%}
+                {% set var_export_checked = '' %}
+                {% set var_export_disabled = '' %}
+            {%endif%}
+            #}
+
+            <tr>
+                <td>{{ value.id }}</td>
+                <td>{{ value.myob_id }}</td>
+                <td>{{ value.invoice_date }}</td>
+                <td>{{ value.customer_name.business_name }}</td>
+                <td>{{ value.invoice_type_desc }}</td>
+                <td>{{ value.invoice_status_desc }}</td>
+                <td style="text-align:center;"><input name="{{ value.id }}" type="checkbox" class="invoice" {{ var_export_checked }}></td>
+                <td style="text-align:center;"><input name="{{ value.emailed }}" type="checkbox" {{ var_emailed_checked }}></td>
+                <td>
+                    <a href="{{ path_for('flimsys.get', {'id': value.invoice_ref, 'source' : 'I', 'status' : 'I'}) }}">Edit</a>
+                    &nbsp;<a href="invoice_pdfs/invoice_flimsy_{{ value.customer_id }}_{{ value.id }}.pdf" target="_blank">View</a>
+                    {% if value.invoice_status == 'P'%}
+                    &nbsp;<a href="{{ path_for('invoice.email') }}">Email</a>
+                    {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="pull-right" >
+        <button type="button" id="export_invoices" class="btn btn-primary">Export Invoices</button>
+    </div>
+    {% endif %}
+
+    <div class="mt-12" style="text-align:right;">{{ invoices.links | raw }}</div>
+
+    <input type="hidden" name="invoice_customer_name" id="invoice_customer_name" value="{{ invoice_customer_name }}">
+
+    <div id="progress_dialog">
+        <div>Some progress messages</div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,49 @@
+{% if flash.getMessage('info') %}
+
+    <div class="alert alert-info">
+
+        {{ flash.getMessage('info') | first }}
+
+    </div>
+
+{% endif %}
+
+{% if flash.getMessage('error') %}
+
+    {#
+    <div class="alert alert-danger">
+
+        {{ flash.getMessage('error') }}
+
+    </div>
+    #}
+
+    {% for error in flash.getMessage('error') %}
+        <div class="alert alert-danger">
+            {{ error }}
+        </div>
+    {% endfor %}
+
+{% endif %}
+
+{% if flash.getMessage('contact') %}
+
+    <div class="alert alert-info">
+
+        {{ flash.getMessage('contact') | first }}
+
+    </div>
+
+{% endif %}
+
+{% if flash.getMessage('success') %}
+
+        {#{ flash.getMessage('success') | first }#}
+
+        {% for success in flash.getMessage('success') %}
+            <div class="alert alert-info">
+                {{ success }}
+            </div>
+        {% endfor %}
+
+{% endif %}

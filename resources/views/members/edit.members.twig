@@ -1,0 +1,25 @@
+{% extends 'templates/app.twig' %}
+
+{% block content %}
+
+    {{  errors | json_encode }}
+
+    {#
+
+    {{  member_types | json_encode }}
+
+    #}
+
+
+    {#
+
+    {% set var_date = date is defined and date is not empty ? date : {'name': 'date', 'value': ''} %}
+
+<input type='text' name="{{ var_date.name }}" value="{{ var_date.value }}" class="form-control date-picker" />
+<input type='hidden' name="timezone" class="timezone" />
+
+    #}
+
+
+
+{% endblock %}

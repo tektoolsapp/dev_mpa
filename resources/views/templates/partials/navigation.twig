@@ -1,0 +1,67 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+
+            <a rel="home" href="{{ path_for('home') }}">
+                <img class="img-responsive pull-left" style="max-width:120px;padding:10px;"
+                     src="{{ base_url() }}/images/logo.png">
+            </a>
+
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Members <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ path_for('members.index', {'filter': 'all'} ) }}">View Members</a></li>
+                        <li><a href="{{ path_for('businesses.index') }}">Businesses - Old</a></li>
+                        <li><a href="{{ path_for('businesses.export') }}">Export Businesses - Old</a></li>
+                        <li><a href="">Pending Members</a></li>
+                        <li><a href="">Renewals</a></li>
+                        <li><a href="">Membership Payment</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#">Separated link</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Transactions <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ path_for('invoices.index') }}">Invoices</a></li>
+                    </ul>
+                </li>
+                <li><a href="{{ path_for('products') }}">Products</a></li>
+                <li><a href="{{ path_for('stakeholders.index', {'filter': 'all'} ) }}">Stakeholders</a></li>
+                <li><a href="{{ path_for('contacts.index', {'filter': 'all'} ) }}">Contacts</a></li>
+                <li><a href="{{ path_for('email.lists.index') }}">Email Lists</a></li>
+                <li><a href="{{ path_for('flimsys.index') }}">Flimsys</a></li>
+                <li><a href="{{ path_for('events.index') }}">Events</a></li>
+                <li><a href="">Reports</a></li>
+
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+
+                <li><a href="{{ path_for('cart.index') }}"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> Cart ({{ basket.itemCount }})</a></li>
+
+                <li><a href="{{ path_for('settings.index') }}">SETTINGS</a></li>
+
+                {% if auth.check %}
+
+                    <li><a href=""><span class="glyphicon glyphicon-user"></span> {{ auth.user.firstname ~ " " ~ auth.user.surname }}</a></li>
+
+                    <li><a href="{{ path_for('auth.signout') }}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+
+                {% else %}
+
+                    <li><a href="{{ path_for('auth.signin') }}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+
+                {% endif %}
+
+            </ul>
+        </div>
+    </div>
+</nav>

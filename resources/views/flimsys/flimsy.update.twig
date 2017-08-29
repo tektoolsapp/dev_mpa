@@ -1,0 +1,500 @@
+{% extends 'templates/app.twig' %}
+{% block content %}
+
+    {% set var_set_header = mode == 'add' ? 'New' : 'Edit Existing' %}
+    {% set var_set_save_location = mode == 'add' ? 'member.add' : 'member.edit' %}
+    {% set var_set_save_attr = mode == 'add' ? '' : ", 'id': flimsy.id" %}
+    {% set var_set_save_btn = mode == 'add' ? 'Add Flimsy Order' : 'Save Changes' %}
+    {% set var_set_save_cancel = mode == 'add' ? 'cancel_add' : 'cancel_edit' %}
+
+    {#
+    {{ mode }}
+    {{ order_types |json_encode }}
+    {{ order_types.checkbox_order_flimsy }}
+    {{ flimsy | json_encode }}
+    {{ flimsy.payment_status }}
+    {{ old | json_encode }}
+    {{ contacts | json_encode }}
+    {{ flimsy | json_encode }}
+    {{ flimsy.ordered_by }}
+    {{ member | json_encode }}
+    #}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">{{ var_set_header }} Flimsy Request</div>
+                <div class="panel-body">
+                    <form action="" id="flimsy_update" method="post" autocomplete="off">
+
+                        <div class="panel panel-default">
+                            <div class="panel-body-header-app">CUSTOMER DETAILS</div>
+                        </div>
+
+                        <div class="row">
+                            {# BUSINESS NAME #}
+                            {% set var_business_name = old.business_name is defined ? old.business_name : member.business_name %}
+                            <div class="col-xs-6">
+                                <div class="form-group{{ errors.business_name ? ' has-error' : '' }} required">
+                                    <label class="control-label" for="business_name">Business/Trading Name</label>
+                                    <input type="text" name="business_name" id="select_member" class="form-control" value="{{ var_business_name }}">
+                                    {% if errors.business_name %}
+                                        <span class="help-block">{{ errors.business_name | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            {# BUSINESS ADDRESS #}
+                            {% set var_business_address = old.business_address is defined ? old.business_address : member.business_address %}
+                            <div class="col-xs-5">
+                                <div class="form-group{{ errors.business_address ? ' has-error' : '' }} required">
+                                    <label class="control-label" for="business_address">Street Address</label>
+                                    <input type="text" name="business_address" id="business_address" class="form-control" value="{{ var_business_address }}">
+                                    {% if errors.business_address %}
+                                        <span class="help-block">{{ errors.business_address | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {# BUSINESS SUBURB #}
+                            {% set var_business_suburb = old.business_suburb is defined ? old.business_suburb : member.business_suburb %}
+                            <div class="col-xs-3">
+                                <div class="form-group{{ errors.business_suburb ? ' has-error' : '' }} required">
+                                    <label class="control-label" for="business_suburb">Suburb</label>
+                                    <input type="text" name="business_suburb" id="business_suburb" class="form-control" value="{{ var_business_suburb }}">
+                                    {% if errors.business_suburb %}
+                                        <span class="help-block">{{ errors.business_suburb | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {# BUSINESS STATE #}
+                            {% set var_business_state = old.business_state is defined ? old.business_state : member.business_state %}
+                            <div class="col-xs-2">
+                                <div class="form-group{{ errors.business_state ? ' has-error' : '' }} required">
+                                    <label class="control-label" for="business_state">State</label>
+                                    <input type="text" name="business_state" id="business_state" class="form-control" value="{{ var_business_state }}">
+                                    {% if errors.business_state %}
+                                        <span class="help-block">{{ errors.business_state | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {# BUSINESS POSTCODE #}
+                            {% set var_business_postcode = old.business_postcode is defined ? old.business_postcode : member.business_postcode %}
+                            <div class="col-lg-2">
+                                <div class="form-group{{ errors.business_postcode ? ' has-error' : '' }} required">
+                                    <label class="control-label" for="business_postcode">Post Code</label>
+                                    <input type="text" name="business_postcode" id="business_postcode" class="form-control" value="{{ var_business_postcode }}">
+                                    {% if errors.business_postcode %}
+                                        <span class="help-block">{{ errors.business_postcode | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-lg-3">
+                                {# ORDER METHOD #}
+                                {% set var_order_method = old.order_method is defined ? old.order_method : flimsy.order_method %}
+                                <div class="form-group{{ errors.order_method ? ' has-error' : '' }} required">
+                                    <label class="control-label" for="order_method">Order Method:</label>
+                                    <select class="form-control" name="order_method" id="order_method">
+                                        <option value="N" {% if var_order_method == 'N' %} selected="selected"{% endif %}>Select a Method</option>
+                                        <option value="P" {% if var_order_method == 'P' %} selected="selected"{% endif %}>Phone</option>
+                                        <option value="E" {% if var_order_method == 'E' %} selected="selected"{% endif %}>Email</option>
+                                        <option value="F" {% if var_order_method == 'F' %} selected="selected"{% endif %}>Fax</option>
+                                        <option value="C" {% if var_order_method == 'C' %} selected="selected"{% endif %}>Over the Counter</option>
+                                    </select>
+                                    {% if errors.order_method %}
+                                        <span class="help-block">{{ errors.order_method | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="col-xs-3">
+                                {# ORDERED BY CONTACT #}
+                                {% if flimsy.order_by %}
+                                    {% set var_ordered_by = flimsy.ordered_by %}
+                                {%elseif old.ordered_by %}
+                                    {% set var_ordered_by = old.ordered_by %}
+                                {%else%}
+                                    {% set var_ordered_by = 'N' %}
+                                {%endif%}
+
+                                {% set var_ordered_by = old.ordered_by is defined ? old.ordered_by : flimsy.ordered_by %}
+                                <div class="form-group{{ errors.type ? ' has-error' : '' }} required">
+                                    <label class="control-label" for="ordered_by">Ordered By:</label>
+                                    <select class="form-control" name="ordered_by" id="ordered_by">
+                                        <option value="N">Select a Contact</option>
+                                        {% for key,val in contacts %}
+                                            <option value="{{ val.id }}" {% if val.id == var_ordered_by %} selected="selected"{% endif %}>{{ val.fullname }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    {% if errors.ordered_by %}
+                                        <span class="help-block">{{ errors.ordered_by | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            {# ORDERED BY order_firstname #}
+                            {% set var_order_firstname = old.order_firstname is defined ? old.order_firstname : order_contact.firstname %}
+                            <div class="col-xs-3">
+                                <div class="form-group{{ errors.order_firstname ? ' has-error' : '' }} required">
+                                    <label class="control-label" for="order_firstname">First Name</label>
+                                    <input type="text" name="order_firstname" id="order_firstname" class="form-control" value="{{ var_order_firstname }}">
+                                    {% if errors.order_firstname %}
+                                        <span class="help-block">{{ errors.order_firstname | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {# ORDERED BY SURNAME #}
+                            {% set var_order_surname = old.order_surname is defined ? old.order_surname : order_contact.surname %}
+                            <div class="col-xs-3">
+                                <div class="form-group{{ errors.order_surname ? ' has-error' : '' }} required">
+                                    <label class="control-label" for="order_surname">Surname</label>
+                                    <input type="text" name="order_surname" id="order_surname" class="form-control" value="{{ var_order_surname }}">
+                                    {% if errors.order_surname %}
+                                        <span class="help-block">{{ errors.order_surname | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {# ORDERED BY PHONE #}
+                            {% set var_order_phone = old.order_phone is defined ? old.order_phone : order_contact.phone %}
+                            <div class="col-xs-2">
+                                <div class="form-group{{ errors.order_phone ? ' has-error' : '' }} required">
+                                    <label class="control-label" for="order_phone">Phone</label>
+                                    <input type="text" name="order_phone" id="order_phone" class="form-control" value="{{ var_order_phone }}">
+                                    {% if errors.order_phone %}
+                                        <span class="help-block">{{ errors.order_phone | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {# ORDERED BY EMAIL #}
+                            {% set var_order_email = old.order_email is defined ? old.order_email : order_contact.email %}
+                            <div class="col-xs-4">
+                                <div class="form-group{{ errors.order_email ? ' has-error' : '' }} required">
+                                    <label class="control-label" for="order_email">Email</label>
+                                    <input type="text" name="order_email" id="order_email" class="form-control" value="{{ var_order_email }}">
+                                    {% if errors.order_email %}
+                                        <span class="help-block">{{ errors.order_email | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            {# ORDERED BY ACCOUNTS EMAIL #}
+                            {% set var_accounts_email = old.accounts_email is defined ? old.accounts_email : member.accounts_email %}
+                            <div class="col-xs-4">
+                                <div class="form-group{{ errors.accounts_email ? ' has-error' : '' }} required">
+                                    <label class="control-label" for="accounts_email">Accounts Email</label>
+                                    <input type="text" name="accounts_email" id="accounts_email" class="form-control" value="{{ var_accounts_email }}">
+                                    {% if errors.accounts_email %}
+                                        <span class="help-block">{{ errors.accounts_email | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel panel-default">
+                            <div class="panel-body-header-app">FLIMSY ORDER DETAILS</div>
+                        </div>
+
+                        <div class="row">
+                            {# FLIMSY PURCHASE ORDER # #}
+                            {% set var_order_po = old.order_po is defined ? old.order_po : flimsy.order_po %}
+                            <div class="col-lg-2">
+                                <div class="form-group{{ errors.order_po ? ' has-error' : '' }}">
+                                    <label class="control-label" for="order_po">Purchase Order #</label>
+                                    <input type="text" name="order_po" class="form-control" value="{{ var_order_po }}">
+                                    {% if errors.order_po %}
+                                        <span class="help-block">{{ errors.order_po | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {# FLIMSY ORDER TYPE # #}
+                            
+                            {% if old.order_flimsy %}
+                                {% set var_order_flimsy = 'checked="checked"' %}
+                            {%elseif order_types.checkbox_order_flimsy %}
+                                {% set var_order_flimsy = 'checked="checked"' %}
+                            {%else%}
+                                {% set var_order_flimsy = '' %}
+                            {%endif%}
+
+                            {% if old.order_sewer_junction %}
+                                {% set var_order_sewer_junction = 'checked="checked"' %}
+                            {%elseif order_types.checkbox_order_sewer_junction %}
+                                {% set var_order_sewer_junction = 'checked="checked"' %}
+                            {%else%}
+                                {% set var_order_sewer_junction = '' %}
+                            {%endif%}
+
+                            {% if old.order_water_main %}
+                                {% set var_order_water_main = 'checked="checked"' %}
+                            {%elseif order_types.checkbox_order_water_main %}
+                                {% set var_order_water_main = 'checked="checked"' %}
+                            {%else%}
+                                {% set var_order_water_main = '' %}
+                            {%endif%}
+                            
+                            <div class="col-lg-5">
+                                <div class="form-group{{ errors.order_type ? ' has-error' : '' }} required">
+                                    <label class="control-label" for="order_types">Order Type</label>
+                                    <div id="order_types">
+                                        <label class="checkbox-inline"><input type="checkbox" name="checkbox_order_flimsy" id="price_flimsy" value="3" {{ var_order_flimsy }} > Flimsy</label>
+                                        <label class="checkbox-inline"><input type="checkbox" name="checkbox_order_sewer_junction" id="price_sewer_junction" value="4" {{ var_order_sewer_junction }}> Sewer Junction</label>
+                                        <label class="checkbox-inline"><input type="checkbox" name="checkbox_order_water_main" id="price_water_main" value="5" {{ var_order_water_main }}> Water Main</label>
+                                        {% if errors.order_type %}
+                                            <span class="help-block">{{ errors.order_type | first }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {# FLIMSY CONTOURS # #}
+
+                            {% if old.contours == 'Y' or flimsy.contours == 'Y' %}
+                                {% set var_contours_y = 'checked="checked"' %}
+                                {% set var_contours_n = '' %}
+                            {%elseif old.contours == 'N' or flimsy.contours == 'N' %}
+                                {% set var_contours_y = '' %}
+                                {% set var_contours_n = 'checked="checked"' %}
+                            {%else%}
+                                {% set var_contours_y = '' %}
+                                {% set var_contours_n = 'checked="checked"' %}
+                            {%endif%}
+
+                            <div class="col-lg-2">
+                                <div class="form-group">
+                                    <label class="control-label" for="contours">Contours?</label>
+                                    <div style="clear:both;"></div>
+                                        <label class="radio-inline" for="Y">
+                                            <input type="radio" name="contours" id="contours_y" value="Y" autocomplete="off" {{ var_contours_y }}> Yes
+                                        </label>
+                                        <label class="radio-inline" for="N">
+                                            <input type="radio" name="contours" id="contours_n" value="N" autocomplete="off" {{ var_contours_n }}> No
+                                        </label>
+                                </div>
+                            </div>
+                            {# ORDER TOTAL PRICE #}
+                            {% set var_order_total = old.order_total is defined ? old.order_total : flimsy.order_total %}
+                            <div class="col-xs-2">
+                                <div class="form-group{{ errors.order_total ? ' has-error' : '' }} ">
+                                    <label class="control-label" for="order_total">Total $</label>
+                                    <input type="text" name="order_total" id="order_total" class="form-control" style="text-align:right;" value="{{ (var_order_total) | number_format(2, '.', ',') }}">
+                                    {% if errors.order_total %}
+                                        <span class="help-block">{{ errors.order_total | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            {# FLIMSY LOT NUM #}
+                            {% set var_lot_num = old.lot_num is defined ? old.lot_num : flimsy.lot_num %}
+                            <div class="col-xs-2">
+                                <div class="form-group{{ errors.lot_num ? ' has-error' : '' }} required">
+                                    <label class="control-label" for="lot_num">Lot #</label>
+                                    <input type="text" name="lot_num" class="form-control" value="{{ var_lot_num }}">
+                                    {% if errors.lot_num %}
+                                        <span class="help-block">{{ errors.lot_num | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {# FLIMSY HOUSE NUM #}
+                            {% set var_house_num = old.house_num is defined ? old.house_num : flimsy.house_num %}
+                            <div class="col-xs-2">
+                                <div class="form-group{{ errors.house_num ? ' has-error' : '' }} required">
+                                    <label class="control-label" for="house_num">House #</label>
+                                    <input type="text" name="house_num" class="form-control" value="{{ var_house_num }}">
+                                    {% if errors.house_num %}
+                                        <span class="help-block">{{ errors.house_num | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {# FLIMSY STREET NAME #}
+                            {% set var_street_name = old.street_name is defined ? old.street_name : flimsy.street_name %}
+                            <div class="col-xs-3">
+                                <div class="form-group{{ errors.street_name ? ' has-error' : '' }} required">
+                                    <label class="control-label" for="street_name">Street Name</label>
+                                    <input type="text" name="street_name" class="form-control" value="{{ var_street_name }}">
+                                    {% if errors.street_name %}
+                                        <span class="help-block">{{ errors.street_name | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {# FLIMSY SUBURB #}
+                            {% set var_suburb = old.suburb is defined ? old.suburb : flimsy.suburb %}
+                            <div class="col-xs-3">
+                                <div class="form-group{{ errors.suburb ? ' has-error' : '' }} required">
+                                    <label class="control-label" for="suburb">Suburb</label>
+                                    <input type="text" name="suburb" class="form-control" value="{{ var_suburb }}">
+                                    {% if errors.suburb %}
+                                        <span class="help-block">{{ errors.suburb | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {# FLIMSY POSTCODE #}
+                            {% set var_postcode = old.postcode is defined ? old.postcode : flimsy.postcode %}
+                            <div class="col-xs-2">
+                                <div class="form-group{{ errors.postcode ? ' has-error' : '' }} required">
+                                    <label class="control-label" for="postcode">Post Code</label>
+                                    <input type="text" name="postcode" class="form-control" value="{{ var_postcode }}">
+                                    {% if errors.postcode %}
+                                        <span class="help-block">{{ errors.postcode | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            {# FLIMSY CLOSEST CROSS ST #}
+                            {% set var_closest_cross_street = old.closest_cross_street is defined ? old.closest_cross_street : flimsy.closest_cross_street %}
+                            <div class="col-xs-4">
+                                <div class="form-group{{ errors.closest_cross_street ? ' has-error' : '' }} required">
+                                    <label class="control-label" for="closest_cross_street">Closest Cross Street</label>
+                                    <input type="text" name="closest_cross_street" class="form-control" value="{{ var_closest_cross_street }}">
+                                    {% if errors.closest_cross_street %}
+                                        <span class="help-block">{{ errors.closest_cross_street | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {# WHEREIS SEARCH #}
+                            <div class="col-xs-4">
+                                <label class="control-label" for="business_name">(Required for Sewer Junction & Main)</label>
+                                <a href="http://www.whereis.com" target="_blank">WHEREIS SEARCH</a>
+                            </div>
+                        </div>
+                        <div class="row">
+                            {# FLIMSY SEND BY #}
+                            <div class="col-xs-2">
+                                {% set var_send_by = old.send_by is defined ? old.send_by : flimsy.send_by %}
+                                <div class="form-group{{ errors.send_by ? ' has-error' : '' }} required">
+                                    <label class="control-label" for="send_by">Send By:</label>
+                                    <select class="form-control" name="send_by" id="send_by">
+                                        <option value="N" {% if var_send_by == 'N' %} selected="selected"{% endif %}>Choose an Option</option>
+                                        <option value="E" {% if var_send_by == 'E' %} selected="selected"{% endif %}>Email</option>
+                                        <option value="F" {% if var_send_by == 'F' %} selected="selected"{% endif %}>Fax</option>
+                                        <option value="P" {% if var_send_by == 'P' %} selected="selected"{% endif %}>Post</option>
+                                        <option value="U" {% if var_send_by == 'U' %} selected="selected"{% endif %}>Pick-Up-</option>
+                                    </select>
+                                    {% if errors.send_by %}
+                                        <span class="help-block">{{ errors.send_by | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel panel-default">
+                            <div class="panel-body-header-app">MPA FLIMSY INFORMATION</div>
+                        </div>
+
+                        <div class="row">
+                        {# FLIMSY PROCESSING STATUS #}
+                            <div class="col-xs-4">
+                                {% set var_flimsy_status = old.flimsy_status is defined ? old.flimsy_status : flimsy.flimsy_status %}
+                                <div class="form-group{{ errors.type ? ' has-error' : '' }} required">
+                                    <label class="control-label" for="flimsy_status">Processing Status:</label>
+                                    <select class="form-control" name="flimsy_status" id="flimsy_status">
+                                        <option value="N" {% if var_flimsy_status == 'N' %} selected="selected"{% endif %}>Select an Option</option>
+                                        <option value="B" {% if var_flimsy_status == 'B' %} selected="selected"{% endif %}>Processing</option>
+                                        <option value="I" {% if var_flimsy_status == 'I' %} selected="selected"{% endif %}>Checking Watercorp</option>
+                                        <option value="I" {% if var_flimsy_status == 'I' %} selected="selected"{% endif %}>Not Available</option>
+                                        <option value="I" {% if var_flimsy_status == 'I' %} selected="selected"{% endif %}>Completed</option>
+                                    </select>
+                                    {% if errors.flimsy_status %}
+                                        <span class="help-block">{{ errors.flimsy_status | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            {# FLIMSY DISTRICT #}
+                            {% set var_district = old.district is defined ? old.district : flimsy.district %}
+                            <div class="col-xs-3">
+                                <div class="form-group{{ errors.district ? ' has-error' : '' }} required">
+                                    <label class="control-label" for="district">District:</label>
+                                    <input type="text" name="district" class="form-control" value="{{ var_district }}">
+                                    {% if errors.district %}
+                                        <span class="help-block">{{ errors.district | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {# FLIMSY FIELD BOOK #}
+                            {% set var_field_book = old.field_book is defined ? old.field_book : flimsy.field_book %}
+                            <div class="col-xs-3">
+                                <div class="form-group{{ errors.field_book ? ' has-error' : '' }} required">
+                                    <label class="control-label" for="field_book">Field Book:</label>
+                                    <input type="text" name="field_book" class="form-control" value="{{ var_field_book }}">
+                                    {% if errors.field_book %}
+                                        <span class="help-block">{{ errors.field_book | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {# FLIMSY PAGE NUMBER #}
+                            {% set var_page_num = old.page_num is defined ? old.page_num : flimsy.page_num %}
+                            <div class="col-xs-1">
+                                <div class="form-group{{ errors.page_num ? ' has-error' : '' }} required">
+                                    <label class="control-label" for="page_num">Page #:</label>
+                                    <input type="text" name="page_num" class="form-control" value="{{ var_page_num }}">
+                                    {% if errors.page_num %}
+                                        <span class="help-block">{{ errors.page_num | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {# FLIMSY MAP COORDS #}
+                            {% set var_map_coords = old.map_coords is defined ? old.map_coords : flimsy.map_coords %}
+                            <div class="col-xs-3">
+                                <div class="form-group{{ errors.map_coords ? ' has-error' : '' }} required">
+                                    <label class="control-label" for="map_coords">Map Co-Ords:</label>
+                                    <input type="text" name="map_coords" class="form-control" value="{{ var_map_coords }}">
+                                    {% if errors.map_coords %}
+                                        <span class="help-block">{{ errors.map_coords | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {# FLIMSY EXTRA NUMBERS #}
+                            <div class="col-xs-2">
+                                {% set var_extra_pages = old.extra_pages is defined ? old.extra_pages : flimsy.extra_pages %}
+                                <div class="form-group{{ errors.type ? ' has-error' : '' }}">
+                                    <label for="extra_pages">Extra Pages:</label>
+                                    <select class="form-control" name="extra_pages" id="extra_pages">
+                                        {% for num in range(0, 10) %}
+                                            <option value="{{ num }}">{{ num }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    {% if errors.extra_pages %}
+                                        <span class="help-block">{{ errors.extra_pages | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <input type="hidden" name="update_source" id="update_source" value="{{ flimsy.source }}">
+                        <input type="hidden" name="invoice_customer_name" id="invoice_customer_name" value="{{ flimsy_invoice_customer }}">
+                        <input type="hidden" name="update_flimsy_mode" id="update_flimsy_mode" value="{{ mode }}">
+                        <input type="hidden" name="flimsy_id" id="flimsy_id" value="{{ flimsy.id }}">
+                        <input type="hidden" name="payment_status" id="payment_status" value="{{ flimsy.payment_status }}">
+                        <input type="hidden" name="invoice_id" id="invoice_id" value="{{ flimsy.invoice_id }}">
+                        {#<input type="hidden" name="customer_type" id="customer_type" value="M">#}
+                        <input type="hidden" name="customer_id" id="customer_id" value="{{ member.customer_id }}">
+                        <input type="hidden" name="ordered_by" id="ordered_by" value="1">
+                        <input type="hidden" name="discount_pricing" id="discount_pricing" value="Y">
+                        <input type="hidden" name="payment_method" id="payment_method" value="{{ member.payment_method }}">
+
+                    </form>
+
+                    <div class="pull-right" >
+                        <button type="submit" id="submit_flimsy" class="btn btn-primary">{{ var_set_save_btn }}</button>
+                        <button type="button" class="btn btn-default" id="{{ var_set_save_cancel }}">Cancel</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

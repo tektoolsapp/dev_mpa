@@ -1,0 +1,43 @@
+{% extends 'templates/app.twig' %}
+{% block content %}
+    <div class="mt-3">
+        <h1>Businesses - Old Database</h1>
+    </div>
+
+    {#{ filter_query | json_encode }#}
+
+    <div class="row">
+        <div class="col-lg-6" style="border:0px solid;"><h4>({{ member_count }} of {{ member_total }} results displayed)</h4></div>
+    </div>
+
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th style="width: 5%">ID</th>
+            <th style="width: 25%">Trading Name</th>
+            <th style="width: 10%">Type</th>
+            <th style="width: 10%">Status</th>
+            <th style="width: 20%">Primary Contact</th>
+            <th style="width: 30%">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for key, value in businesses %}
+            <tr>
+                <td>{{ value.business_id }}</td>
+                <td>{{ value.entity_name }}</td>
+                <td>{{ value.member_type_desc }}</td>
+                <td>{{ value.member_status_description }}</td>
+                <td>{{ value.fullname }}</td>
+                <td>
+                    <a href="{{ path_for('member.get', {'id': value.id}) }}">Edit Member</a>
+                    &nbsp;<a href="{{ path_for('directory.get', {'id': value.id}) }}">Directory Details</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="mt-12" style="text-align:right;">{{ businesses.links | raw }}</div>
+
+{% endblock %}

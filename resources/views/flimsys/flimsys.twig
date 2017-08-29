@@ -1,0 +1,44 @@
+{% extends 'templates/app.twig' %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Flimsys</div>
+                <div class="panel-body">
+                    <form action="" method="post" autocomplete="off" enctype="multipart/form-data">
+                        <div class="row">
+                            {# FLIMSY ITEM #}
+                            {% set var_flimsy_item = old.flimsy_item is defined ? old.flimsy_item : directory.flimsy_item %}
+                            <div class="col-xs-6">
+                                <div class="form-group{{ errors.flimsy_item ? ' has-error' : '' }} required">
+                                    <label class="control-label" for="flimsy_item">Flimsy Item</label>
+                                    <input type="text" name="flimsy_item" class="form-control" value="{{ directory.flimsy_item }}" readonly>
+                                    {% if errors.flimsy_item %}
+                                        <span class="help-block">{{ errors.flimsy_item | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {{ csrf.field | raw}}
+                        <div class="pull-right">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                            <button type="button" class="btn btn-default" id="cancel_edit">Cancel</button>
+                        </div>
+                    </form>
+                    <form action="{{ path_for('flimsys.upload') }}" method="post" autocomplete="off" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <div class="input-group">
+                                    <input type="file" name="upload_item" id="upload_item" class="form-control">
+                                    <span class="input-group-btn">
+                                        <button type="submit" class="btn btn-primary">Upload</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

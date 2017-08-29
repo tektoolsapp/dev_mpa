@@ -1,0 +1,135 @@
+<div id="contact_update_dialog">
+    <div class="col-xs-12" style="margin:15px 0 0 0;">
+        <form id="contact_form" action="" method="post" autocomplete="off">
+            <div class="row">
+                {# CONTACT FIRSTNAME #}
+                {% set var_contact_firstname = old.contact_firstname is defined ? old.contact_firstname : contacts.contact_firstname %}
+                <div class="col-xs-4">
+                    <div class="form-group{{ errors.contact_firstname ? ' has-error' : '' }} required">
+                        <label class="control-label" for="contact_firstname">First Name</label>
+                        <input type="text" name="contact_firstname" id="contact_firstname" class="form-control" value="">
+                        {% if errors.contact_firstname %}
+                            <span class="help-block">{{ errors.contact_firstname | first }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {# CONTACT SURNAME #}
+                {% set var_contact_surname = old.contact_surname is defined ? old.contact_surtname : contacts.contact_surname %}
+                <div class="col-xs-4">
+                    <div class="form-group{{ errors.contact_surname ? ' has-error' : '' }} required">
+                        <label class="control-label" for="contact_surname">Surname</label>
+                        <input type="text" name="contact_surname" id="contact_surname" class="form-control" value="">
+                        {% if errors.contact_surname %}
+                            <span class="help-block">{{ errors.contact_surname | first }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {# CONTACT ROLE #}
+                <div class="col-xs-4">
+                    <div class="form-group">
+                        <label class="control-label" for="contact_role">Role</label>
+                        <div style="clear:both;"></div>
+                        {#active checked#}
+                        <div class="btn-group colors" data-toggle="buttons">
+                            <label class="btn btn-primary" for="P">
+                                <input type="radio" name="contact_role" id="role_p" value="P" autocomplete="off"> Primary
+                            </label>
+                            <label class="btn btn-primary" for="V">
+                                <input type="radio" name="contact_role" id="role_v" value="V" autocomplete="off"> Voting
+                            </label>
+                            <label class="btn btn-primary" for="O">
+                                <input type="radio" name="contact_role" id="role_o"  value="O" autocomplete="off"> Other
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                {# CONTACT PHONE #}
+                {% set var_contact_phone = old.contact_phone is defined ? old.contact_phone : contacts.contact_phone %}
+                <div class="col-xs-3">
+                    <div class="form-group{{ errors.contact_phone ? ' has-error' : '' }} required">
+                        <label class="control-label" for="contact_phone">Phone</label>
+                        <input type="text" name="contact_phone" id="contact_phone" class="form-control" value="">
+                        {% if errors.contact_phone %}
+                            <span class="help-block">{{ errors.contact_phone | first }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {# CONTACT MOBILE #}
+                {% set var_contact_mobile = old.contact_mobile is defined ? old.contact_mobile : contacts.contact_mobile %}
+                <div class="col-xs-3">
+                    <div class="form-group{{ errors.contact_mobile ? ' has-error' : '' }}">
+                        <label class="control-label" for="contact_mobile">Mobile</label>
+                        <input type="text" name="contact_mobile" id="contact_mobile" class="form-control" value="">
+                        {% if errors.contact_mobile %}
+                            <span class="help-block">{{ errors.contact_mobile | first }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {# CONTACT FAX #}
+                {% set var_contact_fax = old.contact_fax is defined ? old.contact_fax : contacts.contact_fax %}
+                <div class="col-xs-2">
+                    <div class="form-group{{ errors.contact_fax ? ' has-error' : '' }}">
+                        <label class="control-label" for="contact_fax">Fax</label>
+                        <input type="text" name="contact_fax" id="contact_fax" class="form-control" value="">
+                    </div>
+                </div>
+                {# CONTACT EMAIL #}
+                {% set var_contact_email = old.contact_email is defined ? old.contact_email : contacts.contact_email %}
+                <div class="col-xs-4">
+                    <div class="form-group{{ errors.contact_email ? ' has-error' : '' }} required">
+                        <label class="control-label" for="contact_email">Email</label>
+                        <input type="text" name="contact_email" id="contact_email" class="form-control" value="">
+                        {% if errors.contact_email %}
+                            <span class="help-block">{{ errors.contact_email | first }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                {# CONTACT STATUS #}
+                <div class="col-xs-3">
+                    {% set var_contact_status = contacts.contact_status %}
+                    <div class="form-group{{ errors.contact_status ? ' has-error' : '' }} required">
+                        <label class="control-label" for="contact_status">Contact Status:</label>
+                        <select class="form-control" name="contact_status" id="contact_status">
+                            <option value="N" {% if var_contact_status == 'N' %} selected="selected"{% endif %}>Select a Status</option>
+                            <option value="A" {% if var_contact_status == 'A' %} selected="selected"{% endif %}>Active</option>
+                            <option value="I" {% if var_contact_status == 'I' %} selected="selected"{% endif %}>In-Active</option>
+                        </select>
+                        {% if errors.contact_status %}
+                            <span class="help-block">{{ errors.contact_status | first }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {# CONTACT RECEIVE JOURNAL #}
+                <div class="col-xs-4">
+                    <div class="form-group">
+                        <label class="control-label" for="contact_journal">Receive Journal?</label>
+                        <div style="clear:both;"></div>
+                        <div class="btn-group colors" data-toggle="buttons">
+                            <label class="btn btn-primary" for="Y" id="journal_label">
+                                <input type="radio" name="contact_journal" id="journal_y" value="Y" autocomplete="off"> Yes Please
+                            </label>
+                            <label class="btn btn-primary" for="N">
+                                <input type="radio" name="contact_journal" id="journal_n" value="N" autocomplete="off"> No Thankyou
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% set var_use_member_id = members.id is defined ? members.id : contacts.members_id %}
+
+            <input type="hidden" name="contact_members_id" id="contact_members_id" value="{{ var_use_member_id }}">
+            <input type="hidden" name="contact_id" id="contact_id" value="{{ contacts.id }}">
+            <input type="hidden" name="contact_type" value="M">
+
+            {{ csrf.field | raw}}
+
+        </form>
+    </div>
+</div>

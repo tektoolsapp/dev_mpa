@@ -1,0 +1,22 @@
+{% extends 'templates/app.twig' %}
+
+
+{% block content %}
+
+    <h1>Stripe Payments</h1>
+
+    {{ stripe |json_encode }}
+
+    <form action="charge.php" method="post">
+        <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                data-key="{{ stripe.publishable_key }}"
+                data-description="Annual Membership"
+                data-amount="5000"
+                data-locale="auto"></script>
+
+
+        {{ csrf.field | raw}}
+
+    </form>
+
+{% endblock %}

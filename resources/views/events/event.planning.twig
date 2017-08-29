@@ -1,0 +1,48 @@
+{% extends 'templates/app.twig' %}
+
+{% block content %}
+
+    {% set var_set_header = mode == 'add' ? 'New' : 'Edit Existing' %}
+    {% set var_set_save_location = mode == 'add' ? 'event.add' : 'event.edit' %}
+    {% set var_set_save_attr = mode == 'add' ? '' : ", 'id': event.id" %}
+    {% set var_set_save_btn = mode == 'add' ? 'Add Event' : 'Save Changes' %}
+    {% set var_set_save_cancel = mode == 'add' ? 'cancel_add' : 'cancel_edit' %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">{{ var_set_header }} Event Planning</div>
+                <div class="panel-body">
+                    <form action="" id="event_update" method="post" autocomplete="off">
+                        <div class="row">
+                            {# EVENT NAME #}
+                            {% set var_event_name = old.event_name is defined ? old.event_name : event.event_name %}
+                            <div class="col-lg-6">
+                                <div class="form-group{{ errors.event_name ? ' has-error' : '' }} required">
+                                    <label class="control-label" for="event_name">Event Name</label>
+                                    <input type="text" name="event_name" class="form-control" value="{{ var_event_name }}">
+                                    {% if errors.event_name %}
+                                        <span class="help-block">{{ errors.event_name | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="event_id" id="event_id" value="{{ event.id }}">
+                        <input type="hidden" name="update_source" id="update_source" value="">
+                        <input type="hidden" name="invoice_customer_name" id="invoice_customer_name" value="">
+                        <input type="hidden" name="update_event_mode" id="update_event_mode" value="{{ mode }}">
+
+                        <div class="pull-right">
+                            <button type="submit" id="submit_event" class="btn btn-primary btn-lg">{{ var_set_save_btn }}</button>
+                            <button type="button" class="btn btn-default btn-lg" id="{{ var_set_save_cancel }}">Cancel</button>
+                        </div>
+
+                        {{ csrf.field | raw}}
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

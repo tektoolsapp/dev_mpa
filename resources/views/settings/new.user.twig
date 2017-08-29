@@ -1,0 +1,292 @@
+{% extends 'templates/app.twig' %}
+
+{% block content %}
+
+    {% set var_set_header = mode == 'add' ? 'Add New' : 'Edit Existing' %}
+    {% set var_set_save_location = mode == 'add' ? 'manageusers.add' : 'manageusers.update' %}
+    {% set var_set_save_attr = mode == 'add' ? '' : ", 'id': user.id" %}
+    {% set var_set_save_btn = mode == 'add' ? 'Add User' : 'Save Changes' %}
+    {% set var_set_save_cancel = mode == 'add' ? 'cancel_add' : 'cancel_edit' %}
+
+    <div class="row">
+
+        <div class="col-md-12">
+
+            <div class="panel panel-default">
+
+                <div class="panel-heading">{{ var_set_header }} User</div>
+
+                <div class="panel-body">
+
+                    <form action="{{ path_for(var_set_save_location, {'id': user.id} ) }}" method="post" autocomplete="off">
+
+                        <div class="row">
+
+                            {# FIRSTNAME #}
+
+                            <div class="col-xs-3">
+
+                                {% set var_firstname = old.firstname is defined ? old.firstname : user.firstname %}
+
+                                <div class="form-group{{ errors.firstname ? ' has-error' : '' }} required">
+
+                                    <label class="control-label" for="email">Firstname</label>
+
+                                    <input type="text" name="firstname" id="firstname" value="{{ var_firstname }}" class="form-control">
+
+                                    {% if errors.firstname %}
+
+                                        <span class="help-block">{{ errors.firstname | first }}</span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                            {# SURNAME #}
+                            
+                            <div class="col-xs-3">
+
+                                {% set var_surname = old.firstname is defined ? old.surname : user.surname %}
+
+                                <div class="form-group{{ errors.surname ? ' has-error' : '' }} required">
+
+                                    <label class="control-label" for="email">Surname</label>
+
+                                    <input type="text" name="surname" id="surname" value="{{ var_surname }}" class="form-control">
+
+                                    {% if errors.surname %}
+
+                                        <span class="help-block">{{ errors.surname | first }}</span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                            {# POSITION #}
+                            
+                            <div class="col-xs-6">
+
+                                {% set var_position = old.position is defined ? old.position : user.position %}
+
+                                <div class="form-group{{ errors.position ? ' has-error' : '' }} required">
+
+                                    <label class="control-label" for="name">Position</label>
+
+                                    <input type="text" name="position" id="position" value="{{ var_position }}" class="form-control">
+
+                                    {% if errors.position %}
+
+                                        <span class="help-block">{{ errors.position | first }}</span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+                            {# EMAIL #}
+                            
+                            <div class="col-xs-6">
+
+                                {% set var_email = old.email is defined ? old.email : user.email %}
+
+                                <div class="form-group{{ errors.email ? ' has-error' : '' }} required">
+
+                                    <label class="control-label" for="email">Email</label>
+
+                                    <input type="text" name="email" id="email" value="{{ var_email }}" placeholder="you@domain.com" class="form-control">
+
+                                    {% if errors.email %}
+
+                                        <span class="help-block">{{ errors.email | first }}</span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                            {# PHONE #}
+                            
+                            <div class="col-xs-3">
+
+                                {% set var_phone = old.phone is defined ? old.phone : user.phone %}
+
+                                <div class="form-group{{ errors.phone ? ' has-error' : '' }} required">
+
+                                    <label class="control-label" for="phone">Phone</label>
+
+                                    <input type="phone" name="phone" id="phone" value="{{ var_phone }}" class="form-control">
+
+                                    {% if errors.phone %}
+
+                                        <span class="help-block">{{ errors.phone | first }}</span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                            {# MOBILE #}
+                            
+                            <div class="col-xs-3">
+
+                                {% set var_mobile = old.mobile is defined ? old.mobile : user.mobile %}
+
+                                <div class="form-group{{ errors.mobile ? ' has-error' : '' }} required">
+
+                                    <label class="control-label" for="mobile">Mobile</label>
+
+                                    <input type="mobile" name="mobile" id="mobile" value="{{ var_mobile }}" class="form-control">
+
+                                    {% if errors.mobile %}
+
+                                        <span class="help-block">{{ errors.mobile | first }}</span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                        
+                        <div class="row">
+
+                            {# USERNAME #}
+                            
+                            <div class="col-xs-3">
+
+                                {% set var_username = old.username is defined ? old.username : user.username %}
+
+                                <div class="form-group{{ errors.username ? ' has-error' : '' }} required">
+
+                                    <label class="control-label" for="username">Username</label>
+
+                                    <input type="text" name="username" id="username" value="{{ var_username }}" class="form-control">
+
+                                    {% if errors.username %}
+
+                                        <span class="help-block">{{ errors.username | first }}</span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                            {# PASSWORD #}
+                            
+                            <div class="col-xs-3">
+
+                                {% set var_password = old.password is defined ? old.password : user.password %}
+
+                                <div class="form-group{{ errors.password ? ' has-error' : '' }} required">
+
+                                    <label class="control-label" for="password">Password</label>
+
+                                    <input type="password" name="password" id="password" value="{{ var_password }}" class="form-control">
+
+                                    {% if errors.password %}
+
+                                        <span class="help-block">{{ errors.password | first }}</span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                        <div class="row">
+
+                            {# ACCESS #}
+
+                            <div class="col-xs-3">
+
+                                {% set var_access = old.access is defined ? old.access : user.access %}
+
+                                <div class="form-group{{ errors.access ? ' has-error' : '' }} required">
+
+                                    <label class="control-label" for="access">Access Level:</label>
+
+                                    <select class="form-control" name="access" id="access">
+
+                                        <option value="N" {% if var_access == 'N' %} selected="selected"{% endif %}>Select an Access Level</option>
+                                        <option value="A" {% if var_access == 'A' %} selected="selected"{% endif %}>Level A</option>
+                                        <option value="B" {% if var_access == 'B' %} selected="selected"{% endif %}>Level B</option>
+
+                                    </select>
+
+                                    {% if errors.access %}
+
+                                        <span class="help-block">{{ errors.access | first }}</span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                            {# STATUS #}
+
+                            <div class="col-xs-3">
+
+                                {% set var_status = old.status is defined ? old.status : user.status %}
+
+                                <div class="form-group{{ errors.status ? ' has-error' : '' }} required">
+
+                                    <label class="control-label" for="status">User Status:</label>
+
+                                    <select class="form-control" name="status" id="status">
+
+                                        <option value="N" {% if var_status == 'N' %} selected="selected"{% endif %}>Select a Status</option>
+                                        <option value="A" {% if var_status == 'A' %} selected="selected"{% endif %}>Active</option>
+                                        <option value="X" {% if var_status == 'X' %} selected="selected"{% endif %}>In-Active</option>
+
+                                    </select>
+
+                                    {% if errors.status %}
+
+                                        <span class="help-block">{{ errors.status | first }}</span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        {{ csrf.field | raw}}
+
+                        <div class="pull-right">
+
+                            <button type="submit" class="btn btn-primary">{{ var_set_save_btn }}</button>
+
+                            <button type="button" class="btn btn-default" id="{{ var_set_save_cancel }}">Cancel</button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+{% endblock %}

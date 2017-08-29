@@ -1,0 +1,97 @@
+{% extends 'templates/app.twig' %}
+
+{% block content %}
+
+    {#{  errors | json_encode }#}
+    {#{  skillset }#}
+    {#}{  directory }#}
+
+    <div class="row">
+
+        <div class="col-md-12">
+
+            <div class="panel panel-default">
+
+                <div class="panel-heading">Edit Directory Listing</div>
+
+                <div class="panel-body">
+
+                    <form action="" method="post" autocomplete="off">
+
+                        <div class="row">
+
+                            {# BUSINESS NAME #}
+
+                            {% set var_trading_name = old.trading_name is defined ? old.trading_name : directory.trading_name %}
+
+                            <div class="col-xs-6">
+
+                                <div class="form-group{{ errors.trading_name ? ' has-error' : '' }} required">
+
+                                    <label class="control-label" for="trading_name">Business/Trading Name</label>
+
+                                    <input type="text" name="trading_name" class="form-control" value="{{ directory.trading_name }}" readonly>
+
+                                    {% if errors.trading_name %}
+
+                                        <span class="help-block">{{ errors.trading_name | first }}</span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+                            {# SPECIALIST SKILLS #}
+
+                            <div class="form-group" id="licence_types">
+
+                                <label class="col-md-2 control-label" for="Checkboxes">Specialist Skills</label>
+
+                                <div class="col-md-10 columns">
+
+                                    {% for key,val in skillset %}
+
+                                        <label class="checkbox-inline" for="{{ val.description }}">
+                                            <input type="checkbox" name="skill_{{ val.id }}" id="skill_{{ val.id }}" value="{{ val.id }}" {% if val.id in skills %} checked="checked" {% endif %}>
+                                            {{ val.description }}
+                                        </label>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <input type="hidden" name="id" value="{{ directory.id }}">
+                        <input type="hidden" name="member_id" value="{{ directory.member_id }}">
+                        <input type="hidden" name="display_status" id="display_status" value="{{ members_display_status }}">
+                        <input type="hidden" name="display_name" id="display_name" value="{{ members_display_name }}">
+
+                        <div class="pull-right">
+
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+
+                            <button type="button" class="btn btn-default" id="cancel_edit">Cancel</button>
+
+                        </div>
+
+                        {{ csrf.field | raw}}
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+{% endblock %}

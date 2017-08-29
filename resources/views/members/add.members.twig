@@ -1,0 +1,841 @@
+{% extends 'templates/app.twig' %}
+
+{% block content %}
+
+    {#{  errors | json_encode }#}
+    {#{  member | json_encode }#}
+    {#{ contacts | json_encode }#}
+    {#{  activity_types | json_encode }#}
+    {#{  old | json_encode }#}
+
+    {% set var_set_header = mode == 'add' ? 'Add New' : 'Edit Existing' %}
+    {% set var_set_save_location = mode == 'add' ? 'member.add' : 'member.edit' %}
+    {% set var_set_save_attr = mode == 'add' ? '' : ", 'id': member.id" %}
+    {% set var_set_save_btn = mode == 'add' ? 'Add Member' : 'Save Changes' %}
+    {% set var_set_save_cancel = mode == 'add' ? 'cancel_add' : 'cancel_edit' %}
+
+    {{ var_set_save_location }}
+
+    <div class="row">
+
+        <div class="col-md-12">
+
+            <div class="panel panel-default">
+
+                <div class="panel-heading">{{ var_set_header }} Member</div>
+
+                <div class="panel-body">
+
+                        <form action="{{ path_for(var_set_save_location, {'id': member.id} ) }}" method="post" autocomplete="off">
+
+                        <div class="panel panel-default">
+                            <div class="panel-body-header-app">MEMBER BUSINESS DETAILS</div>
+                        </div>
+
+                        <div class="row">
+
+                            {# BUSINESS NAME #}
+
+                            {% set var_business_name = old.business_name is defined ? old.business_name : member.business_name %}
+
+                            <div class="col-xs-6">
+
+                                <div class="form-group{{ errors.business_name ? ' has-error' : '' }} required">
+
+                                    <label class="control-label" for="business_name">Business/Trading Name</label>
+
+                                    <input type="text" name="business_name" class="form-control" value="{{ var_business_name }}">
+
+                                    {% if errors.business_name %}
+
+                                        <span class="help-block">{{ errors.business_name | first }}</span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                            {# COMPANY NAME #}
+
+                            {% set var_company_name = old.company_name is defined ? old.company_name : member.company_name %}
+                            
+                            <div class="col-xs-6">
+
+                                <div class="form-group{{ errors.company_name ? ' has-error' : '' }} required">
+
+                                    <label class="control-label" for="company_name">Company Name</label>
+
+                                    <input type="text" name="company_name" class="form-control" value="{{ var_company_name }}">
+
+                                    {% if errors.company_name %}
+
+                                        <span class="help-block">{{ errors.company_name | first }}</span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        {# ROW 2 #}
+
+                        <div class="row">
+
+                            {# ABN #}
+
+                            {% set var_business_abn = old.business_abn is defined ? old.business_abn : member.business_abn %}
+
+                            <div class="col-xs-4">
+
+                                <div id="business_abn_group" class="form-group{{ errors.business_abn ? ' has-error' : '' }} required">
+
+                                    <label class="control-label" for="business_abn">ABN</label>
+
+                                    <input type="text" name="business_abn" id="business_abn" class="form-control" value="{{ var_business_abn }}">
+
+                                    <span id="company_number_error" class="help-block required_message"> Either ABN, ACN or ARBN must be selected </span>
+
+                                    {% if errors.business_abn %}
+
+                                        <span class="help-block">{{ errors.business_abn | first }}</span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                            {# ACN #}
+
+                            {% set var_business_acn = old.business_acn is defined ? old.business_acn : member.business_acn %}
+
+                            <div class="col-xs-4">
+
+                                <div id="business_acn_group" class="form-group{{ errors.business_acn ? ' has-error' : '' }}">
+
+                                    <label class="control-label" for="business_acn">ACN</label>
+
+                                    <input type="text" name="business_acn" id="business_acn" class="form-control" value="{{ var_business_acn }}">
+
+                                    {% if errors.business_acn %}
+
+                                        <span class="help-block">{{ errors.business_acn | first }}</span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                            {# ARBN #}
+
+                            {% set var_business_arbn = old.business_arbn is defined ? old.business_arbn : member.business_arbn %}
+
+                            <div class="col-xs-4">
+
+                                <div id="business_arbn_group" class="form-group{{ errors.business_arbn ? ' has-error' : '' }}">
+
+                                    <label class="control-label" for="business_arbn">ABRN</label>
+
+                                    <input type="text" name="business_arbn" id="business_arbn" class="form-control" value="{{ var_business_arbn }}">
+
+                                    {% if errors.business_arbn %}
+
+                                        <span class="help-block">{{ errors.business_arbn | first }}</span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        {# ROW 1 #}
+
+                        <div class="row">
+
+                            {# BUSINESS TYPE #}
+
+                            <div class="col-xs-3">
+
+                                {% set var_business_type = old.business_type is defined ? old.business_type : member.business_type %}
+                               
+                                <div class="form-group{{ errors.type ? ' has-error' : '' }}">
+
+                                    <label for="business_type">Business Type:</label>
+
+                                    <select class="form-control" name="business_type" id="business_type">
+
+                                        <option value="N" {% if var_business_type == 'N' %} selected="selected"{% endif %}>Select a Type</option>
+                                        <option value="B" {% if var_business_type == 'B' %} selected="selected"{% endif %}>Business</option>
+                                        <option value="I" {% if var_business_type == 'I' %} selected="selected"{% endif %}>Individual</option>
+
+                                    </select>
+
+                                    {% if errors.business_type %}
+
+                                        <span class="help-block">{{ errors.business_type | first }}</span>
+
+                                    {% endif %}
+
+
+                                </div>
+
+                            </div>
+
+                            {# MEMBER TYPE #}
+
+                            {% set var_member_type = old.member_type is defined ? old.member_type : member.member_type %}
+
+                            <div class="col-xs-3">
+
+                                <div class="form-group{{ errors.member_type ? ' has-error' : '' }}">
+
+                                    <label for="member_type">Member Type:</label>
+
+                                    <select class="form-control" name="member_type" id="member_type">
+                                    {% for key,val in member_types %}
+                                        <option value="{{ val.member_type_value }}" {% if var_member_type == val.member_type_value %} selected="selected"{% endif %}>{{ val.member_type_desc }}</option>
+                                    {% endfor %}
+                                    </select>
+
+                                    {% if errors.member_type %}
+
+                                        <span class="help-block">{{ errors.member_type | first }}</span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                            {# MEMBER STATUS #}
+
+                            <div class="col-xs-3">
+
+                                {% set var_member_status = old.member_status is defined ? old.member_status : member.member_status %}
+
+                                <div class="form-group{{ errors.member_status ? ' has-error' : '' }}">
+
+                                    <label for="member_status">Member Status:</label>
+
+                                    <select class="form-control" name="member_status" id="member_status">
+
+                                        <option value="N" {% if var_member_status == 'N' %} selected="selected"{% endif %}>Select a Status</option>
+                                        <option value="C" {% if var_member_status == 'C' %} selected="selected"{% endif %}>Current</option>
+                                        <option value="U" {% if var_member_status == 'U' %} selected="selected"{% endif %}>Unpaid</option>
+                                        <option value="P" {% if var_member_status == 'P' %} selected="selected"{% endif %}>Pending</option>
+
+                                    </select>
+
+                                    {% if errors.member_status %}
+
+                                        <span class="help-block">{{ errors.member_status | first }}</span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        {# ROW 1 #}
+
+                        <div class="row">
+
+                            {# DATE JOINED #}
+
+                            {% set var_date_joined = old.date_joined is defined ? old.date_joined : member.date_joined %}
+
+                            <div class="col-xs-3">
+
+                                <div class="form-group{{ errors.date_joined ? ' has-error' : '' }} required">
+
+                                    <label for="date_joined">Date Joined</label>
+
+                                    <input type="text" name="date_joined" id="date_joined" class="form-control date_start" value="{{ var_date_joined }}">
+
+                                    {% if errors.date_joined %}
+
+                                        <span class="help-block">{{ errors.date_joined | first }}</span>
+
+                                    {% endif %}
+
+                                </div>
+
+                             </div>
+
+                            {# DATE RESIGNED #}
+
+                            {% set var_date_resigned = old.date_resigned is defined ? old.date_resigned : member.date_resigned %}
+
+                            <div class="col-xs-3">
+
+                                <div class="form-group{{ errors.date_resigned ? ' has-error' : '' }}">
+
+                                    <label for="date_resigned">Date resigned</label>
+
+                                    <input type="text" name="date_resigned" id="date_resigned" class="form-control date_end" value="{{ var_date_resigned }}">
+
+                                    {% if errors.date_resigned %}
+
+                                        <span class="help-block">{{ errors.date_resigned | first }}</span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+                            {# LICENCE TYPE #}
+
+                            {#{ "G" ~ member.checkboxes_licensed_gasfitter_num }#}
+
+                            {#{ "P" ~ member.checkboxes_licensed_plumber_num }#}
+
+                            <div class="form-group" id="licence_types">
+
+                                <label class="col-md-2 control-label" for="Checkboxes">Licence Type</label>
+
+                                <div class="col-md-10 columns">
+
+                                    <label class="checkbox-inline" for="checkboxes_backflow_certificate">
+                                        <input type="checkbox" name="Checkboxes" id="checkboxes_backflow_certificate" value="bfc">
+                                        Backflow Certificate
+                                    </label>
+                                    <label class="checkbox-inline" for="checkboxes_envirowest_certificate">
+                                        <input type="checkbox" name="Checkboxes" id="checkboxes_envirowest_certificate" value="enc">
+                                        Envirowest Certificate
+                                    </label>
+                                    <label class="checkbox-inline" for="checkboxes_licensed_contractor">
+                                        <input type="checkbox" name="Checkboxes" id="checkboxes_licensed_contractor" value="lco">
+                                        Licensed Contractor
+                                    </label>
+
+
+                                    {#<label class="checkbox-inline" for="checkboxes_licensed_gasfitter">
+                                        <input type="checkbox" name="Checkboxes" id="check_checkboxes_licensed_gasfitter" value="lgf">
+                                        Licensed Gasfitter
+                                    </label>#}
+
+
+                                    <span class="additional-info-wrap">
+
+                                        {% set var_checkboxes_licensed_gasfitter_num = old.checkboxes_licensed_gasfitter_num is defined ? old.checkboxes_licensed_gasfitter_num : member.checkboxes_licensed_gasfitter_num %}
+
+                                        {#% set var_checkboxes_licensed_gasfitter_status = member.checkboxes_licensed_gasfitter_num is defined ? 'checked="checked"' : '' %#}
+
+                                        {#% set  is defined ? 'checked="checked"' : '' %#}
+
+                                        {# { ["checkboxes_licensed_gasfitter_num"]=> string(8) "67676767" } #}
+
+                                        {%if member.checkboxes_licensed_gasfitter_num%}
+                                            {% set var_checkboxes_licensed_gasfitter_status = 'checked="checked"' %}
+                                        {%elseif old.checkboxes_licensed_gasfitter_num%}
+                                            {% set var_checkboxes_licensed_gasfitter_status = 'checked="checked"' %}
+                                        {%else%}
+                                            {% set var_checkboxes_licensed_gasfitter_status = ''%}
+                                        {%endif%}
+
+
+                                        {#{ var_checkboxes_licensed_gasfitter_status }#}
+
+                                        <label class="checkbox-inline" for="checkboxes_licensed_gasfitter">
+                                            <input type="checkbox" name="check_checkboxes_licensed_gasfitter" id="check_checkboxes_licensed_gasfitter" value="" {{ var_checkboxes_licensed_gasfitter_status }}>
+                                            Licensed Gasfitter
+                                        </label>
+
+                                        <div id="checkboxes_licensed_gasfitter_err" class="additional-info hide{{ errors.checkboxes_licensed_gasfitter_num ? ' has-error' : '' }}">
+                                            <input type="text" id="checkboxes_licensed_gasfitter_num" name="checkboxes_licensed_gasfitter_num" placeholder="Licence Number" class="form-control"  value="{{ var_checkboxes_licensed_gasfitter_num }}" disabled="">
+
+                                            {% if errors.checkboxes_licensed_gasfitter_num %}
+
+                                                <span class="help-block">{{ errors.checkboxes_licensed_gasfitter_num | first }}</span>
+
+                                            {% endif %}
+
+                                        </div>
+
+                                    </span>
+
+                                    <input type="hidden" name="set_checkboxes_licensed_plumber_num" id="set_checkboxes_licensed_plumber_num" value="">
+
+                                    <span class="additional-info-wrap">
+
+                                        {% set var_checkboxes_licensed_plumber_num = old.checkboxes_licensed_plumber_num is defined ? old.checkboxes_licensed_plumber_num : member.checkboxes_licensed_plumber_num %}
+
+                                        {%if old.set_checkboxes_licensed_plumber_num is defined and old.set_checkboxes_licensed_plumber_num == 'Y' %}
+                                            {% set var_checkboxes_licensed_plumber_status = 'checked="checked"' %}
+                                        {%elseif member.checkboxes_licensed_plumber_num is defined and member.checkboxes_licensed_plumber_num is not empty%}
+                                            {% set var_checkboxes_licensed_plumber_status = 'checked="checked"' %}
+                                        {%else%}
+                                            {% set var_checkboxes_licensed_plumber_status = ''%}
+                                        {%endif%}
+
+                                        <label class="checkbox-inline" for="checkboxes_licensed_plumber">
+                                            <input type="checkbox" name="check_checkboxes_licensed_plumber" id="check_checkboxes_licensed_plumber" value="" {{ var_checkboxes_licensed_plumber_status }}>
+                                            Licensed Plumber/Tradesperson
+                                        </label>
+
+                                        <div id="checkboxes_licensed_plumber_err" class="additional-info hide{{ errors.checkboxes_licensed_plumber_num ? ' has-error' : '' }}">
+                                            <input type="text" id="checkboxes_licensed_plumber_num" name="checkboxes_licensed_plumber_num" placeholder="Licence Number" class="form-control"  value="{{ var_checkboxes_licensed_plumber_num }}" disabled="">
+
+                                            {% if errors.checkboxes_licensed_plumber_num %}
+
+                                                <span class="help-block">{{ errors.checkboxes_licensed_plumber_num | first }}</span>
+
+                                            {% endif %}
+
+                                        </div>
+
+                                    </span>
+
+                                    <span class="additional-info-wrap">
+
+                                        {% set var_checkboxes_other_num = old.checkboxes_other_num is defined ? old.checkboxes_other_num : member.checkboxes_other_num %}
+
+                                        {% set var_checkboxes_other_status = member.check_checkboxes_other is defined ? 'checked="checked"' : '' %}
+
+                                        {% set var_checkboxes_other_status = old.checkboxes_other_num is defined ? 'checked="checked"' : '' %}
+
+                                        <label class="checkbox-inline" for="checkboxes_other">
+                                            <input type="checkbox" name="check_checkboxes_other" id="check_checkboxes_other" value="" {{ var_checkboxes_other_status }}>
+                                            Other
+                                        </label>
+
+                                        <div id="checkboxes_other_err" class="additional-info hide{{ errors.checkboxes_other_num ? ' has-error' : '' }}">
+                                            <input type="text" id="checkboxes_other_num" name="checkboxes_other_num" placeholder="Licence Number" class="form-control"  value="{{ var_checkboxes_other_num }}" disabled="">
+
+                                            {% if errors.checkboxes_other_num %}
+
+                                                <span class="help-block">{{ errors.checkboxes_other_num | first }}</span>
+
+                                            {% endif %}
+
+                                        </div>
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        {#
+
+                        <div class="row">
+
+                        <div class="form-group">
+                            <label class="col-md-2 control-label" for="Radios">Radio buttons</label>
+
+                            <div class="col-md-10 columns">
+                                <label class="radio-inline" for="Radios_Apple">
+                                    <input type="radio" name="Radios" id="Radios_Apple" value="Apple">
+                                    Apple
+                                </label>
+                                <label class="radio-inline" for="Radios_Orange">
+                                    <input type="radio" name="Radios" id="Radios_Orange" value="Orange">
+                                    Orange
+                                </label>
+                                <label class="radio-inline" for="Radios_Bananas">
+                                    <input type="radio" name="Radios" id="Radios_Bananas" value="Bananas">
+                                    Banana
+                                </label>
+                                <label class="radio-inline" for="Radios_Kumquats">
+                                    <input type="radio" name="Radios" id="Radios_Kumquats" value="Kumquats">
+                                    Kumquat
+                                </label>
+                    <span class="additional-info-wrap">
+                        <label class="radio-inline" for="Radios_Grape">
+                            <input type="radio" name="Radios" id="Radios_Grape" value="Grape">
+                            Grape
+                        </label>
+                        <div class="additional-info hide">
+                            <input type="text" id="RadiosNameOfGrape" name="RadiosNameOfGrape" placeholder="Name of Grape" class="form-control" disabled="">
+                        </div>
+                    </span>
+                    <span class="additional-info-wrap">
+                        <label class="radio-inline" for="Radios_Other">
+                            <input type="radio" name="Radios" id="Radios_Other" value="Other">
+                            Other
+                        </label>
+                        <div class="additional-info hide">
+                            <input type="text" id="RadiosOther" name="RadiosOther" placeholder="Describe" class="form-control" disabled="">
+                        </div>
+                    </span>
+                            </div>
+                        </div>
+
+                        </div>
+
+                        #}
+                            
+                        <div class="row">
+
+                            {# ACTIVITY TYPE #}
+
+                            {% set var_activity_type = old.activity_type is defined ? old.activity_type : member.activity_type %}
+
+                            <div class="col-xs-3">
+
+                                <div class="form-group{{ errors.activity_type ? ' has-error' : '' }}">
+
+                                    <label for="activity_type">Activity Type:</label>
+
+                                    <select class="form-control" name="activity_type" id="activity_type">
+                                        {% for key,val in activity_types %}
+                                            <option value="{{ val.activity_type_value }}" {% if var_activity_type == val.activity_type_value %} selected="selected"{% endif %}>{{ val.activity_type_desc }}</option>                                {% endfor %}
+                                    </select>
+
+                                    {% if errors.activity_type %}
+
+                                        <span class="help-block">{{ errors.activity_type | first }}</span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+                            
+                        </div>
+
+                        <div class="panel panel-default">
+                            <div class="panel-body-header-app">MEMBER CONTACT DETAILS</div>
+                        </div>
+
+                        <div class="row">
+
+                            {# BUSINESS PHONE #}
+
+                            {% set var_business_phone = old.business_phone is defined ? old.business_phone : member.business_phone %}
+
+                            <div class="col-xs-3">
+
+                                <div class="form-group{{ errors.business_phone ? ' has-error' : '' }} required">
+
+                                    <label class="control-label" for="business_phone">Business Phone</label>
+
+                                    <input type="text" name="business_phone" class="form-control" value="{{ var_business_phone }}">
+
+                                    {% if errors.business_phone %}
+
+                                        <span class="help-block">{{ errors.business_phone | first }}</span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                            {# BUSINESS FAX #}
+
+                            {% set var_business_fax = old.business_fax is defined ? old.business_fax : member.business_fax %}
+
+                            <div class="col-xs-3">
+
+                                <div class="form-group{{ errors.business_fax ? ' has-error' : '' }} required">
+
+                                    <label class="control-label" for="business_fax">Business Fax</label>
+
+                                    <input type="text" name="business_fax" class="form-control" value="{{ var_business_fax }}">
+
+                                    {% if errors.business_fax %}
+
+                                        <span class="help-block">{{ errors.business_fax | first }}</span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+                            
+                        </div>
+
+                        <div class="row">
+
+                            {# BUSINESS ADDRESS #}
+
+                            {% set var_business_address = old.business_address is defined ? old.business_address : member.business_address %}
+                            
+                            <div class="col-xs-6">
+
+                                <div class="form-group{{ errors.business_address ? ' has-error' : '' }} required">
+
+                                    <label class="control-label" for="business_address">Business Address</label>
+
+                                    <input type="text" name="business_address" class="form-control" value="{{ var_business_address }}">
+
+                                    {% if errors.business_address %}
+
+                                        <span class="help-block">{{ errors.business_address | first }}</span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                            {# BUSINESS SUBURB #}
+
+                            {% set var_business_suburb = old.business_suburb is defined ? old.business_suburb : member.business_suburb %}
+
+                            <div class="col-xs-3">
+
+                                <div class="form-group{{ errors.business_suburb ? ' has-error' : '' }} required">
+
+                                    <label class="control-label" for="business_suburb">Suburb</label>
+
+                                    <input type="text" name="business_suburb" class="form-control" value="{{ var_business_suburb }}">
+
+                                    {% if errors.business_suburb %}
+
+                                        <span class="help-block">{{ errors.business_suburb | first }}</span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+                            {# BUSINESS STATE #}
+
+                            {% set var_business_state = old.business_state is defined ? old.business_state : member.business_state %}
+                            
+                            <div class="col-xs-3">
+
+                                <div class="form-group{{ errors.business_state ? ' has-error' : '' }} required">
+
+                                    <label class="control-label" for="business_state">State</label>
+
+                                    <input type="text" name="business_state" class="form-control" value="{{ var_business_state }}">
+
+                                    {% if errors.business_state %}
+
+                                        <span class="help-block">{{ errors.business_state | first }}</span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                            {# BUSINESS POSTCODE #}
+
+                            {% set var_business_postcode = old.business_postcode is defined ? old.business_postcode : member.business_postcode %}
+                            
+                            <div class="col-xs-3">
+
+                                <div class="form-group{{ errors.business_postcode ? ' has-error' : '' }} required">
+
+                                    <label class="control-label" for="business_postcode">Post Code</label>
+
+                                    <input type="text" name="business_postcode" class="form-control" value="{{ var_business_postcode }}">
+
+                                    {% if errors.business_postcode %}
+
+                                        <span class="help-block">{{ errors.business_postcode | first }}</span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+                            {# MAILING ADDRESS #}
+
+                            {% set var_mailing_address = old.mailing_address is defined ? old.mailing_address : member.mailing_address %}
+                            
+                            <div class="col-xs-6">
+
+                                <div class="form-group{{ errors.mailing_address ? ' has-error' : '' }} required">
+
+                                    <label class="control-label" for="mailing_address">Mailing Address</label>
+
+                                    <input type="text" name="mailing_address" class="form-control" value="{{ var_mailing_address }}">
+
+                                    {% if errors.mailing_address %}
+
+                                        <span class="help-block">{{ errors.mailing_address | first }}</span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                            {# MAILING SUBURB #}
+
+                            {% set var_mailing_suburb = old.mailing_suburb is defined ? old.mailing_suburb : member.mailing_suburb %}
+
+                            <div class="col-xs-3">
+
+                                <div class="form-group{{ errors.mailing_suburb ? ' has-error' : '' }} required">
+
+                                    <label class="control-label" for="mailing_suburb">Mailing Address</label>
+
+                                    <input type="text" name="mailing_suburb" class="form-control" value="{{ var_mailing_suburb }}">
+
+                                    {% if errors.mailing_suburb %}
+
+                                        <span class="help-block">{{ errors.mailing_suburb | first }}</span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+                            {# MAILING STATE #}
+
+                            {% set var_mailing_state = old.mailing_state is defined ? old.mailing_state : member.mailing_state %}
+                
+                                <div class="col-xs-3">
+
+                                <div class="form-group{{ errors.mailing_state ? ' has-error' : '' }} required">
+
+                                    <label class="control-label" for="mailing_state">Mailing State</label>
+
+                                    <input type="text" name="mailing_state" class="form-control" value="{{ var_mailing_state }}">
+
+                                    {% if errors.mailing_state %}
+
+                                        <span class="help-block">{{ errors.mailing_state | first }}</span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                            {# MAILING POSTCODE #}
+
+                            {% set var_mailing_postcode = old.mailing_postcode is defined ? old.mailing_postcode : member.mailing_postcode %}
+                            
+                            <div class="col-xs-3">
+
+                                <div class="form-group{{ errors.mailing_postcode ? ' has-error' : '' }} required">
+
+                                    <label class="control-label" for="mailing_postcode">Mailing Post Code</label>
+
+                                    <input type="text" name="mailing_postcode" class="form-control" value="{{ var_mailing_postcode }}">
+
+                                    {% if errors.mailing_postcode %}
+
+                                        <span class="help-block">{{ errors.mailing_postcode | first }}</span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                            
+                        <input type="hidden" name="member_id" id="member_id" value="{{ member.id }}">
+
+                        <input type="hidden" name="display_status" id="display_status" value="{{ member_display_status }}">
+
+                        <input type="hidden" name="display_name" id="display_name" value="{{ member_display_name }}">
+
+                        <div class="pull-right" >
+
+                            <button type="submit" id="submit_member" class="btn btn-primary">{{ var_set_save_btn }}</button>
+
+                            <button type="button" class="btn btn-default" id="{{ var_set_save_cancel }}">Cancel</button>
+
+                        </div>
+
+                        {{ csrf.field | raw}}
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% if contacts is not empty%}
+
+        <div class="panel-body-subheader-app" style="float:left">MEMBER CONTACTS</div>
+
+        <div style="margin:0 0 10px 0;float:right;">
+
+            <button id="add_contact" type="button" class="btn btn-default">Add Contact</button>
+
+        </div>
+
+        <div style="clear:both"></div>
+
+        <table class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th style="width: 10%">Type</th>
+                <th style="width: 15%">Name</th>
+                <th style="width: 10%">Role</th>
+                <th style="width: 10%">Phone</th>
+                <th style="width: 10%">Mobile</th>
+                <th style="width: 20%">Email</th>
+                <th style="width: 10%">Status</th>
+                <th style="width: 20%">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for key, value in contacts %}
+
+                <tr>
+                    <td>{{ value.type_desc }}</td>
+                    <td>{{ value.fullname }}</td>
+                    <td>{{ value.role_desc }}</td>
+                    <td>{{ value.phone }}</td>
+                    <td>{{ value.mobile }}</td>
+                    <td>{{ value.email }}</td>
+                    <td>{{ value.status_desc }}</td>
+                    <td><a href="" id="edit_contact_{{ value.id }}">Edit</a></td>
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+
+    {% else %}
+
+        {% if mode != 'add' %}
+
+            <button id="add_contact" type="button" class="btn btn-default">Add Contact</button>
+
+        {% endif %}
+
+    {% endif %}
+
+    {% include 'contacts/partials/contact.form.twig' %}
+
+{% endblock %}

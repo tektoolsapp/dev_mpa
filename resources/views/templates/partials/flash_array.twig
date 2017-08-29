@@ -1,0 +1,6 @@
+{{ flash.getMessages | json_encode }}
+
+
+{% for error in flash.getMessages %}
+    <div>{{ error }}</div>
+{% endfor %}

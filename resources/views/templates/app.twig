@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="UTF-8">
+        <title>MPA Admin</title>
+        <link rel="stylesheet" href="{{ base_url() }}/css/dist/css/bootstrap.css?{{ inc }}">
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+              integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+              crossorigin="anonymous">
+        <link rel="stylesheet" href="{{ base_url() }}/css/custom-theme/jquery-ui-1.10.0.custom.css?{{ inc }}">
+        <link rel="stylesheet" href="{{ base_url() }}/css/app.css?{{ inc }}">
+        <link rel="stylesheet" href="{{ base_url() }}/css/sticky-footer.css?{{ inc }}">
+
+    </head>
+
+    <body>
+
+    {% include 'templates/partials/navigation.twig' %}
+
+    <div class="container">
+        {% include 'templates/partials/flash.twig' %}
+        {% block content %}{% endblock %}
+    </div>
+
+    {% include 'templates/partials/footer.twig' %}
+
+    <script
+            src="https://code.jquery.com/jquery-1.9.1.js"
+            integrity="sha256-e9gNBsAcA0DBuRWbm0oZfbiCyhjLrI6bmqAl5o+ZjUA="
+            crossorigin="anonymous">
+    </script>
+
+    <script src="{{ base_url() }}/js/jquery.blockUI.js?{{ inc }}"></script>
+    <script src="{{ base_url() }}/js/js-cookie-1.5.1/src/js.cookie.js?{{ inc }}"></script>
+    <script src="{{ base_url() }}/js/jquery-timepicker/jquery.timepicker.js?{{ inc }}"></script>
+    <link rel="stylesheet" href="{{ base_url() }}/js/jquery-timepicker/jquery.timepicker.css?{{ inc }}">
+    <script src="{{ base_url() }}/js/dist/jquery.validate.js?{{ inc }}"></script>
+    <script src="{{ base_url() }}/js/jquery-migrate-1.2.1.min.js?{{ inc }}"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous">
+    </script>
+
+    <script src="{{ base_url() }}/js/jquery-ui-1.10.3.custom.min.js?{{ inc }}" type="text/javascript"></script>
+
+    {%if integ_process_script_1 is defined %}
+        <script src="{{ base_url() }}/js/{{ integ_process_script_1 }}.js?{{ inc }}"></script>
+    {%endif%}
+
+    {%if integ_process_script_2 is defined %}
+        <script src="{{ base_url() }}/js/{{ integ_process_script_2 }}.js?{{ inc }}"></script>
+    {%endif%}
+
+    {%if integ_connect_script is defined %}
+        <script src="{{ base_url() }}/js/{{ integ_connect_script }}.js?{{ inc }}"></script>
+    {%endif%}
+
+    {%if js_script_2 is defined %}
+        <script src="{{ base_url() }}/js/{{ js_script_2 }}.js?{{ inc }}"></script>
+    {%endif%}
+
+    {%if js_script is defined %}
+        <script src="{{ base_url() }}/js/{{ js_script }}.js?{{ inc }}"></script>
+    {%endif%}
+
+    {% block scripts %}{% endblock %}
+
+    </body>
+
+</html>

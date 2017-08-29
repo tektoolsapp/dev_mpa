@@ -1,0 +1,16 @@
+{% extends 'templates/app.twig' %}
+{% block content %}
+    <div class="row" style="margin:25px 0 0 0;">
+        <div class="container">
+            <button type="button" id="connect" class="btn btn-default">Connect</button>
+        </div>
+    </div>
+
+    <div id="myob_error" style="margin-top:10px;">
+        <div id="myob_error_type"></div>
+    </div>
+
+    <div id="connect_dialog" style="margin-top:10px;">
+        <div>MYOB is currently disconnected.</div>
+    </div>
+{% endblock %}

@@ -1,0 +1,131 @@
+{% extends 'templates/app.twig' %}
+
+{% block content %}
+
+    {% set var_set_header = mode == 'add' ? 'New' : 'Edit Existing' %}
+    {% set var_set_save_location = mode == 'add' ? 'event.add' : 'event.edit' %}
+    {% set var_set_save_attr = mode == 'add' ? '' : ", 'id': event.id" %}
+    {% set var_set_save_btn = mode == 'add' ? 'Add Event' : 'Save Changes' %}
+    {% set var_set_save_cancel = mode == 'add' ? 'cancel_add' : 'cancel_edit' %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">{{ var_set_header }} Event</div>
+                <div class="panel-body">
+                    <form action="" id="event_update" method="post" autocomplete="off">
+                        <div class="row">
+                            {# EVENT NAME #}
+                            {% set var_event_name = old.event_name is defined ? old.event_name : event.event_name %}
+                            <div class="col-lg-6">
+                                <div class="form-group{{ errors.event_name ? ' has-error' : '' }} required">
+                                    <label class="control-label" for="event_name">Event Name</label>
+                                    <input type="text" name="event_name" class="form-control" value="{{ var_event_name }}">
+                                    {% if errors.event_name %}
+                                        <span class="help-block">{{ errors.event_name | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            {# EVENT DESCRIPTION #}
+                            {% set var_event_description = old.event_description is defined ? old.event_description : event.event_description %}
+                            <div class="col-lg-8">
+                                <div class="form-group{{ errors.event_description ? ' has-error' : '' }} required">
+                                    <label class="control-label" for="event_description">Event Description</label>
+                                    <textarea class="form-control" rows="5" name="event_description">{{ var_event_description }}</textarea>
+                                    {% if errors.event_description %}
+                                        <span class="help-block">{{ errors.event_description | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3">
+                                {# EVENT TYPE #}
+                                {% set var_event_type = old.event_type is defined ? old.event_type : event.event_type %}
+                                <div class="form-group{{ errors.event_type ? ' has-error' : '' }} required">
+                                    <label class="control-label" for="event_type">Event Type:</label>
+                                    <select class="form-control" name="event_type" id="event_type">
+                                        <option value="N" {% if var_event_type == 'N' %} selected="selected"{% endif %}>Select a Type</option>
+                                        <option value="A" {% if var_event_type == 'A' %} selected="selected"{% endif %}>Event Type A</option>
+                                        <option value="B" {% if var_event_type == 'B' %} selected="selected"{% endif %}>Event Type B</option>
+                                        <option value="C" {% if var_event_type == 'C' %} selected="selected"{% endif %}>Event Type C</option>
+                                    </select>
+                                    {% if errors.event_type %}
+                                        <span class="help-block">{{ errors.event_type | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            {# EVENT DATE #}
+                            {% set var_event_date = old.event_date is defined ? old.event_date : event.event_date %}
+                            <div class="col-lg-3">
+                                <div class="form-group{{ errors.event_date ? ' has-error' : '' }} required">
+                                    <label class="control-label" for="event_date">Event Date</label>
+                                    <input type="text" name="event_date" id="event_date" class="form-control datepicker" value="{{ var_event_date }}">
+                                    {% if errors.event_date %}
+                                        <span class="help-block">{{ errors.event_date | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            {# EVENT START #}
+                            {% set var_event_start = old.event_start is defined ? old.event_start : event.event_start %}
+                            <div class="col-lg-3">
+                                <div class="form-group{{ errors.event_start ? ' has-error' : '' }} required">
+                                    <label class="control-label" for="event_start">Event Start Time</label>
+                                    <input type="text" name="event_start" id="event_start" class="form-control timepicker" value="{{ var_event_start }}">
+                                    {% if errors.event_start %}
+                                        <span class="help-block">{{ errors.event_start | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            {# MIN PARTICIPANTS #}
+                            {% set var_min_participants = old.min_participants is defined ? old.min_participants : event.min_participants %}
+                            <div class="col-lg-2">
+                                <div class="form-group{{ errors.min_participants ? ' has-error' : '' }}">
+                                    <label class="control-label" for="min_participants">Min. Participants</label>
+                                    <input type="number" name="min_participants" class="form-control" value="{{ var_min_participants }}">
+                                    {% if errors.min_participants %}
+                                        <span class="help-block">{{ errors.min_participants | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {# MAX PARTICIPANTS #}
+                            {% set var_max_participants = old.max_participants is defined ? old.max_participants : event.max_participants %}
+                            <div class="col-lg-2">
+                                <div class="form-group{{ errors.max_participants ? ' has-error' : '' }}">
+                                    <label class="control-label" for="max_participants">Max. Participants</label>
+                                    <input type="number" name="max_participants" class="form-control" value="{{ var_max_participants }}">
+                                    {% if errors.max_participants %}
+                                        <span class="help-block">{{ errors.max_participants | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="event_id" id="event_id" value="{{ event.id }}">
+                        <input type="hidden" name="update_source" id="update_source" value="">
+                        <input type="hidden" name="invoice_customer_name" id="invoice_customer_name" value="">
+                        <input type="hidden" name="update_event_mode" id="update_event_mode" value="{{ mode }}">
+
+                        <div class="pull-right">
+                            <button type="submit" id="submit_event" class="btn btn-primary btn-lg">{{ var_set_save_btn }}</button>
+                            <button type="button" class="btn btn-default btn-lg" id="{{ var_set_save_cancel }}">Cancel</button>
+                        </div>
+
+                        {{ csrf.field | raw}}
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

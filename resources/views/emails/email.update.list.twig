@@ -1,0 +1,47 @@
+{% extends 'templates/app.twig' %}
+
+{% block content %}
+
+    {{ mode }}
+
+    {% set var_set_header = mode == 'add' ? 'New' : 'Edit Existing' %}
+    {% set var_set_save_location = mode == 'add' ? 'list.add' : 'list.edit' %}
+    {% set var_set_save_attr = mode == 'add' ? '' : ", 'id': list.id" %}
+    {% set var_set_save_btn = mode == 'add' ? 'Add List' : 'Save Changes' %}
+    {% set var_set_save_cancel = mode == 'add' ? 'cancel_add' : 'cancel_edit' %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">{{ var_set_header }} Email List</div>
+                <div class="panel-body">
+                    <form action="" id="list_update" method="post" autocomplete="off">
+                        <div class="row">
+                            {# LIST NAME #}
+                            {% set var_list_name = old.list_name is defined ? old.list_name : event.list_name %}
+                            <div class="col-lg-6">
+                                <div class="form-group{{ errors.list_name ? ' has-error' : '' }} required">
+                                    <label class="control-label" for="list_name">List Name</label>
+                                    <input type="text" name="list_name" class="form-control" value="{{ var_list_name }}">
+                                    {% if errors.list_name %}
+                                        <span class="help-block">{{ errors.list_name | first }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="update_list_mode" id="update_list_mode" value="{{ mode }}">
+
+                        <div class="pull-right">
+                            <button type="submit" id="submit_list" class="btn btn-primary btn-lg">{{ var_set_save_btn }}</button>
+                            <button type="button" class="btn btn-default btn-lg" id="{{ var_set_save_cancel }}">Cancel</button>
+                        </div>
+
+                        {{ csrf.field | raw}}
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

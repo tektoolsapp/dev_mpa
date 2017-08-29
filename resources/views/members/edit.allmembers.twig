@@ -1,0 +1,118 @@
+{% extends 'templates/app.twig' %}
+
+{% block content %}
+
+    {#
+    {{  old | json_encode }}
+    #}
+
+    {#
+
+    {% set var_date = date is defined and date is not empty ? date : {'name': 'date', 'value': ''} %}
+
+<input type='text' name="{{ var_date.name }}" value="{{ var_date.value }}" class="form-control date-picker" />
+<input type='hidden' name="timezone" class="timezone" />
+
+    #}
+
+    <div class="row">
+
+        <div class="col-md-6 col-md-offset-3">
+
+            <div class="panel panel-default">
+
+                <div class="panel-heading">Edit Existing Member</div>
+
+                <div class="panel-body">
+
+                    <form action="{{ path_for('members.upd', {'id': members.id}) }}" method="post" autocomplete="off">
+
+                        {% set var_name = old.name is defined ? old.name : members.name %}
+
+                        <div class="form-group{{ errors.name ? ' has-error' : '' }}">
+
+                            <label for="name">Name</label>
+
+                            <input type="text" name="name" id="name" value="{{ var_name }}" class="form-control">
+
+                            {% if errors.name %}
+
+                                <span class="help-block">{{ errors.name | first }}</span>
+
+                            {% endif %}
+
+                        </div>
+
+                        {% set var_type = old.type is defined and old.type is not empty ? old.type : members.type %}
+
+                        <div class="form-group{{ errors.type ? ' has-error' : '' }}">
+
+                            <label for="type">Member Type:</label>
+
+                            <select class="form-control" name="type" id="type">
+
+                                <option value="N" {% if var_type == 'N' %} selected="selected"{% endif %}>Select a Type</option>
+                                <option value="P" {% if var_type == 'P' %} selected="selected"{% endif %}>Plumber</option>
+                                <option value="A" {% if var_type == 'A' %} selected="selected"{% endif %}>Other</option>
+
+                            </select>
+
+                            {% if errors.type %}
+
+                                <span class="help-block">{{ errors.type | first }}</span>
+
+                            {% endif %}
+
+                        </div>
+
+                        {% set var_address = old.address is defined ? old.address : members.address %}
+
+                        <div class="form-group{{ errors.address ? ' has-error' : '' }}">
+
+                            <label for="address">Address</label>
+
+                            <input type="text" name="address" id="address" value="{{ var_address }}" class="form-control">
+
+                            {% if errors.address %}
+
+                                <span class="help-block">{{ errors.address | first }}</span>
+
+                            {% endif %}
+
+                        </div>
+
+                        {% set var_suburb = old.suburb is defined ? old.suburb : members.suburb %}
+
+                        <div class="form-group{{ errors.suburb ? ' has-error' : '' }}">
+
+                            <label for="suburb">Suburb</label>
+
+                            <input type="text" name="suburb" id="suburb" value="{{ var_suburb }}" class="form-control">
+
+                            {% if errors.suburb %}
+
+                                <span class="help-block">{{ errors.suburb | first }}</span>
+
+                            {% endif %}
+
+                        </div>
+
+                        <input type="hidden" name="id" value="{{ members.id }}">
+
+                        <button type="submit" class="btn btn-default">Save Changes</button>
+
+                        <button type="button" class="btn btn-default" id="cancel">Cancel</button>
+
+                        {{ csrf.field | raw}}
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+{% endblock %}
