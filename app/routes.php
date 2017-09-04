@@ -111,15 +111,24 @@ $app->get('/flimsys/contact/{id}', ['App\Controllers\Flimsys\FlimsysController',
 $app->post('/flimsys/order/{id}', ['App\Controllers\Flimsys\FlimsysController', 'orderFlimsy'])->setName('flimsys.order');
 
 //EVENTS
-
 $app->get('/events', ['App\Controllers\Events\EventsController', 'index'])->setName('events.index');
 $app->get('/event/new',['App\Controllers\Events\EventsController', 'newEvent'])->setName('event.new');
 $app->post('/event/add', ['App\Controllers\Events\EventsController', 'add'])->setName('event.add');
 $app->get('/event/get/{id}', ['App\Controllers\Events\EventsController', 'get'])->setName('event.get');
 $app->post('/event/edit/{id}', ['App\Controllers\Events\EventsController', 'edit'])->setName('event.edit');
-$app->get('/event/attendees/{id}', ['App\Controllers\Events\EventsController', 'attendees'])->setName('event.attendees');
+$app->get('/event/attendees/{id}/{conf}', ['App\Controllers\Events\EventsController', 'attendees'])->setName('event.attendees');
 $app->get('/event/planning/{id}', ['App\Controllers\Events\EventsController', 'planning'])->setName('event.planning');
 
+$app->post('/event/build/attendees/{id}', ['App\Controllers\Events\EventsController', 'buildAttendees'])->setName('event.build.attendees');
+$app->get('/event/display/attendees/{id}', ['App\Controllers\Events\EventsController', 'displayAttendees'])->setName('event.display.attendees');
+$app->post('/event/confirm/attendees/{id}', ['App\Controllers\Events\EventsController', 'confirmAttendees'])->setName('event.confirm.attendees');
+$app->post('/event/delete/attendees/{id}', ['App\Controllers\Events\EventsController', 'deleteAttendees'])->setName('event.delete.attendees');
+
+$app->get('/event/calendar', ['App\Controllers\Events\EventsController', 'eventCalendar'])->setName('event.calendar');
+
+$app->post('/event/schedule/update/{id}', ['App\Controllers\Events\EventsController', 'editSchedule'])->setName('event.update.schedule');
+$app->post('/event/schedule/add', ['App\Controllers\Events\EventsController', 'addSchedule'])->setName('event.add.schedule');
+$app->get('/event/schedule/fetch', ['App\Controllers\Events\EventsController', 'fetchSchedule'])->setName('fetch.schedule');
 
 
 //MISC

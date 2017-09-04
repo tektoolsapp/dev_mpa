@@ -250,8 +250,6 @@
                             </div>
                         </div>
 
-                            {{ member.set_mailing_address }}
-
                             {%if old.check_set_mailing_address == 'N'%}
                                 {% set var_set_mailing_adddress = 'checked="checked"' %}
                             {%elseif old.check_set_mailing_address == 'Y'%}
@@ -268,7 +266,7 @@
                                     <span class="input-group-addon beautiful">
                                         <input type="radio" name="set_mailing_address" {{ var_set_mailing_adddress }} id="set_mailing_address">
                                     </span>
-                                        <input type="text" class="form-control" style="width:310px;">
+                                        <input type="text" class="form-control" style="width:414px;">
                                     </div>
                                 </div>
                             </div>
@@ -333,8 +331,8 @@
                     </form>
 
                     <div class="pull-right" >
-                        <button type="submit" id="submit_stakeholder_new" class="btn btn-primary">{{ var_set_save_btn }}</button>
-                        <button type="button" class="btn btn-default" id="{{ var_set_save_cancel }}">Cancel</button>
+                        <button type="submit" id="submit_stakeholder_new" class="btn btn-primary btn-lg">{{ var_set_save_btn }}</button>
+                        <button type="button" class="btn btn-default btn-lg" id="{{ var_set_save_cancel }}">Cancel</button>
                     </div>
                 </div>
             </div>
@@ -344,7 +342,7 @@
     {% if contacts is not empty%}
         <div class="panel-body-subheader-app" style="float:left">STAKEHOLDER CONTACTS</div>
         <div style="margin:0 0 10px 0;float:right;">
-            <button id="add_contact" type="button" class="btn btn-default">Add Contact</button>
+            <button id="add_contact" type="button" class="btn btn-default btn-lg">Add Contact</button>
         </div>
 
         <div style="clear:both"></div>
@@ -379,7 +377,7 @@
         </table>
     {% else %}
         {% if mode != 'add' %}
-            <button id="add_contact" type="button" class="btn btn-default">Add Contact</button>
+            <button id="add_contact" type="button" class="btn btn-default btn-lg">Add Contact</button>
         {% endif %}
     {% endif %}
 

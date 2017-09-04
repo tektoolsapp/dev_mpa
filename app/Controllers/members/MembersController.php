@@ -76,7 +76,7 @@ class MembersController
         //dump("FILTER", $filter);
         //dump('SC', $_SESSION['members_filter_query']);
 
-        $filters = $allGetVars = $request->getQueryParams();
+        $filters = $request->getQueryParams();
 
         //dump("FILTERS 1", $filters);
         //dump("SIZE", sizeof($filters));
@@ -386,13 +386,6 @@ class MembersController
                 'contact_status.description as status_desc'
             )->orderBy('contacts.id', 'ASC')
             ->get();
-
-        /*
-        $contacts = Contacts::where([
-            ['members_id', '=', $id],
-            ['status', '<>', 'X']
-        ])->get();
-        */
 
         if(isset($_SESSION['members_filter_query'])){
             $filter_query = http_build_query($_SESSION['members_filter_query']);

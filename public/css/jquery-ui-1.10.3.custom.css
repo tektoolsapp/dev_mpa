@@ -1331,7 +1331,7 @@ button.ui-button::-moz-focus-inner {
 	position: relative;
 	padding: 5px 15px;
 	border: 0 0 0 1px solid;
-	border-color: white;
+	border-color: #FFF;
 	padding: 5px 15px;
 	font-size: 18px;
 	text-decoration: none;

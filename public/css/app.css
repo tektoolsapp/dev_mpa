@@ -243,3 +243,10 @@ td {
 .table-striped > tbody > tr:nth-of-type(even) {
     background-color: #DCDCDC!important;
 }
+
+/* CALENDAR */
+.fc-event { height: 100px!important; }
+
+.ui-datepicker {
+    font-size:18px;
+}

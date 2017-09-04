@@ -16,6 +16,7 @@ class Events extends Model
         'event_start',
         'min_participants',
         'max_participants',
+        'event_attendance_options'
     ];
 
 }

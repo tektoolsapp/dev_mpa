@@ -2,47 +2,140 @@
 
 {% block content %}
 
+    {#
     {% set var_set_header = mode == 'add' ? 'New' : 'Edit Existing' %}
     {% set var_set_save_location = mode == 'add' ? 'event.add' : 'event.edit' %}
     {% set var_set_save_attr = mode == 'add' ? '' : ", 'id': event.id" %}
     {% set var_set_save_btn = mode == 'add' ? 'Add Event' : 'Save Changes' %}
     {% set var_set_save_cancel = mode == 'add' ? 'cancel_add' : 'cancel_edit' %}
+    #}
+
+    {% if display_type == 'Y' %}
+        {% set var_disabled_option = 'disabled' %}
+    {% else %}
+        {% set var_disabled_option = '' %}
+    {% endif %}
 
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">{{ var_set_header }} Event Attendees</div>
                 <div class="panel-body">
-                    <form action="" id="event_update" method="post" autocomplete="off">
+                    <form action="" id="attendees_update" method="post" autocomplete="off">
                         <div class="row">
-                            {# EVENT NAME #}
-                            {% set var_event_name = old.event_name is defined ? old.event_name : event.event_name %}
-                            <div class="col-lg-6">
-                                <div class="form-group{{ errors.event_name ? ' has-error' : '' }} required">
-                                    <label class="control-label" for="event_name">Event Name</label>
-                                    <input type="text" name="event_name" class="form-control" value="{{ var_event_name }}">
-                                    {% if errors.event_name %}
-                                        <span class="help-block">{{ errors.event_name | first }}</span>
-                                    {% endif %}
+                            {# SELECTION OPTIONS #}
+                            <div class="form-group" id="selection_options">
+                                <label class="col-md-2 control-label" for="Checkboxes">Members</label>
+                                <div class="col-md-10 columns">
+                                    {% for key,val in options %}
+                                        {% if val.type == 'M' %}
+                                            <label class="checkbox-inline" for="{{ val.description }}">
+                                                <input type="checkbox" name="{{ val.type }}|{{ val.field }}|{{ val.value }}" id="{{ val.type }}_{{ val.field }}_{{ val.value }}" value="{{ val.id }}" {% if val.id in event_attendee_options %} checked="checked" {% endif %} {{ var_disabled_option }} ">
+                                                {{ val.option_desc }}
+                                            </label>
+                                        {% endif %}
+                                    {% endfor %}
                                 </div>
                             </div>
                         </div>
 
-                        <input type="hidden" name="event_id" id="event_id" value="{{ event.id }}">
-                        <input type="hidden" name="update_source" id="update_source" value="">
-                        <input type="hidden" name="invoice_customer_name" id="invoice_customer_name" value="">
-                        <input type="hidden" name="update_event_mode" id="update_event_mode" value="{{ mode }}">
-
-                        <div class="pull-right">
-                            <button type="submit" id="submit_event" class="btn btn-primary btn-lg">{{ var_set_save_btn }}</button>
-                            <button type="button" class="btn btn-default btn-lg" id="{{ var_set_save_cancel }}">Cancel</button>
+                        <div class="row">
+                            {# SELECTION OPTIONS #}
+                            <div class="form-group" id="selection_options">
+                                <label class="col-md-2 control-label" for="Checkboxes">Stakeholders</label>
+                                <div class="col-md-10 columns">
+                                    {% for key,val in options %}
+                                        {% if val.type == 'S' %}
+                                            <label class="checkbox-inline" for="{{ val.description }}">
+                                                <input type="checkbox" name="{{ val.type }}|{{ val.field }}|{{ val.value }}" id="{{ val.type }}_{{ val.field }}_{{ val.value }}" value="{{ val.id }}" {% if val.id in event_attendee_options %} checked="checked" {% endif %} {{ var_disabled_option }}>
+                                                {{ val.option_desc }}
+                                            </label>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
                         </div>
+
+                        <input type="hidden" name="event_id" id="event_id" value="{{ event_id }}">
 
                         {{ csrf.field | raw}}
 
                     </form>
+
+                    {% if display_type == 'N' %}
+
+                        <div class="pull-right">
+                            <button type="submit" id="confirm_attendees" class="btn btn-primary btn-lg">Confirm List</button>
+                            <button type="submit" id="build_attendees" class="btn btn-primary btn-lg">Build List</button>
+                            <button type="button" class="btn btn-default btn-lg" id="cancel_edit">Cancel</button>
+                        </div>
+
+                    {% endif %}
+
                 </div>
             </div>
         </div>
     </div>
+
+    {% if attendees is not empty%}
+        <div id="attendees_header" style="display:block;border:0px solid red;">
+            <div class="panel-body-subheader-app" style="float:left;margin-top:15px;">ATTENDANCE LIST</div>
+            <div style="float:right;margin:0 0 0 15px;">{{ attendees.links | raw }}</div>
+            <div style="clear:both;"></div>
+        </div>
+
+        <div id="attendee_updates" style="display:none;">
+        <div class="btn-group-lg" role="group" aria-label="attendee options" style="text-align:right;margin:0 0 5px 0;">
+            <button id="delete_selected" type="button" class="btn btn-default">Delete Selected</button>
+            <button id="email_selected" type="button" class="btn btn-default">Email Invite</button>
+        </div>
+        </div>
+
+    {% endif %}
+
+        <div id="attendees_list">
+            {% if attendees is not empty%}
+                <table class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th style="width: 5%">ID</th>
+                        <th style="width: 5%">Type</th>
+                        <th style="width: 25%">Name</th>
+                        <th style="width: 40%">Email Address</th>
+                        <th style="width: 25%;text-align:right;padding-right:15px;">
+                            {% if display_type != 'N' %}
+                                <input id="select_all" type="checkbox"> Select All
+                            {% endif %}
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    {% for key, value in attendees %}
+                        <tr>
+                            <td>{{ value.entity_id }}</td>
+                            <td>{{ value.option_type }}</td>
+                            <td>{{ value.fullname }}</td>
+                            <td>{{ value.email }}</td>
+                            <td>
+                                {% if display_type != 'N' %}
+                                    <input class="attendee" type="checkbox" value="{{ value.id }}">
+                                    &nbsp;&nbsp;<a href="">View</a>
+                                    &nbsp;&nbsp;<a href="">Delete</a>
+                                {%  else %}
+                                    <a href="">Do Something</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+
+                <div class="mt-12" style="text-align:right;">{{ attendees.links | raw }}</div>
+
+            {% endif %}
+
+        </div>
+
 {% endblock %}

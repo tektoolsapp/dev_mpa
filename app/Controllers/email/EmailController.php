@@ -8,6 +8,7 @@ use Slim\Flash\Messages as Flash;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use \DrewM\MailChimp\MailChimp;
+use Illuminate\Database\Capsule\Manager as DB;
 
 class EmailController
 {

@@ -13,6 +13,7 @@ class Contacts extends Model
         'type',
         'role',
         'members_id',
+        'stakeholders_id',
         'firstname',
         'surname',
         'fullname',

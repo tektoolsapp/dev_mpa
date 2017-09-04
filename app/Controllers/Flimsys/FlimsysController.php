@@ -52,7 +52,7 @@ class FlimsysController
             $flimsy['entity_name'] = $member->business_name;
             $status = $flimsy->status;
             if($status == 'N'){
-                $status_desc = 'New Request';
+                $status_desc = 'New';
             }
             $flimsy['status_desc'] = $status_desc;
 
@@ -64,7 +64,7 @@ class FlimsysController
 
             $payment_status = $flimsy->payment_status;
             if($payment_status == 'U'){
-                $payment_status_desc = 'Unpaid (credit)';
+                $payment_status_desc = 'Unpaid (Cr)';
             } elseif($payment_status == 'I'){
                 $payment_status_desc = 'Invoiced';
             }

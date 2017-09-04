@@ -1,0 +1,96 @@
+{% extends 'templates/app.twig' %}
+{% block content %}
+
+    <h2>Event Calendar</h2>
+
+    <div id='calendar'></div>
+
+    <div id="eventContent" title="Event Details" style="display:none;">
+        <div class="col-lg-12" style="margin:15px 0 0 0;">
+            <form id="event_schedule_update" action="" method="post" autocomplete="off">
+                <div class="row">
+                    {# TITLE #}
+                    {% set var_event_title = old.event_title is defined ? old.event_title : event.event_title %}
+                    <div class="col-lg-12">
+                        <div class="form-group{{ errors.event_title ? ' has-error' : '' }} required">
+                            <label class="control-label" for="event_title">Event Title:</label>
+                            <input type="text" name="event_title" id="event_title" class="form-control" value="">
+                            <span id="error_event_title" class="help-block">{{ errors.event_title | first }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    {# DESCRIPTION #}
+                    {% set var_event_description = old.event_description is defined ? old.event_description : event.event_description %}
+                    <div class="col-lg-12">
+                        <div class="form-group{{ errors.event_description ? ' has-error' : '' }} required">
+                            <label class="control-label" for="event_description">Event Description:</label>
+                            <input type="text" name="event_description" id="event_description" class="form-control" value="">
+                            <span id="error_event_description" class="help-block">{{ errors.event_description | first }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    {# START DATE #}
+                    {% set var_start_date = old.start_date is defined ? old.start_date : event.start_date %}
+                    <div class="col-lg-3">
+                        <div class="form-group{{ errors.start_date ? ' has-error' : '' }} required">
+                            <label class="control-label" for="start_date">Start Date:</label>
+                            <input type="text" name="start_date" id="start_date" class="form-control date_start" value="">
+                            <span id="error_start_date" class="help-block">{{ errors.start_date | first }}</span>
+                        </div>
+                    </div>
+                    {# START TIME #}
+                    {% set var_start_time = old.start_time is defined ? old.start_time : event.start_time %}
+                    <div class="col-lg-3">
+                        <div class="form-group{{ errors.start_time ? ' has-error' : '' }} required">
+                            <label class="control-label" for="start_date">Start Time:</label>
+                            <input type="text" name="start_time" id="start_time" class="form-control timepicker" value="">
+                            <span id="error_start_time" class="help-block">{{ errors.start_time | first }}</span>
+                        </div>
+                    </div>
+                    {# DURATION - HOURS #}
+                    {% set var_hours = old.hours is defined ? old.hours : event.hours %}
+                    <div class="col-lg-3">
+                        <div class="form-group{{ errors.hours ? ' has-error' : '' }} required">
+                            <label class="control-label" for="hours">Hours:</label>
+                            <input type="text" name="hours" id="hours" class="form-control" value="">
+                            <span id="error_hours" class="help-block">{{ errors.hours | first }}</span>
+                        </div>
+                    </div>
+                    {# DURATION - MINS #}
+                    {% set var_mins = old.mins is defined ? old.mins : event.mins %}
+                    <div class="col-lg-3">
+                        <div class="form-group{{ errors.mins ? ' has-error' : '' }} required">
+                            <label class="control-label" for="mins">Mins:</label>
+                            <input type="text" name="mins" id="mins" class="form-control" value="">
+                            <span id="error_mins" class="help-block">{{ errors.mins | first }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-lg-6">
+                        {% set var_resource = event.resource %}
+                        <div class="form-group{{ errors.resource ? ' has-error' : '' }} required">
+                            <label class="control-label" for="resource">Employee:</label>
+                            <select class="form-control" name="resource" id="resource">
+                                <option value="N" {% if var_resource == 'N' %} selected="selected"{% endif %}>Select a Resource</option>
+                                <option value="1" {% if var_resource == '1' %} selected="selected"{% endif %}>Allan Hyde</option>
+                                <option value="2" {% if var_resource == '2' %} selected="selected"{% endif %}>Joe Black</option>
+                                <option value="3" {% if var_resource == '3' %} selected="selected"{% endif %}>Frank Reddy</option>
+                            </select>
+                            <span id="error_resource" class="help-block">{{ errors.resource | first }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <input type="hidden" name="schedule_id" id="schedule_id" value="{{ event.id }}">
+
+                {{ csrf.field | raw}}
+
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

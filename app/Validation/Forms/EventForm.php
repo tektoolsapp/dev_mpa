@@ -10,7 +10,7 @@ class EventForm
     {
         return [
             'event_name' => v::notEmpty()->setName('Event Name'),
-            'event_description' => v::notEmpty()->setName('Event Description'),
+            'schedule_description' => v::notEmpty()->setName('Event Description'),
             'event_type' => v::notEmpty()->NotSelected()->setName('Event Type'),
             'event_date' => v::notEmpty()->setName('Event Date'),
             'event_start' => v::notEmpty()->setName('Event Start'),

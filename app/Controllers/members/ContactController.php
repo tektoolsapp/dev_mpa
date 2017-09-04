@@ -5,6 +5,7 @@ namespace App\Controllers\Members;
 use Slim\Router;
 use Slim\Views\Twig;
 use App\Models\Members;
+use App\Models\Stakeholders;
 use App\Models\Contacts;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -18,14 +19,16 @@ class ContactController
     protected $flash;
     protected $contacts;
     protected $members;
+    protected $stakeholders;
 
-    public function __construct(Router $router, ValidatorInterface $validator, Flash $flash, Contacts $contacts, Members $members)
+    public function __construct(Router $router, ValidatorInterface $validator, Flash $flash, Contacts $contacts, Members $members, Stakeholders $stakeholders)
     {
         $this->router = $router;
         $this->validator = $validator;
         $this->flash = $flash;
         $this->contacts = $contacts;
         $this->members = $members;
+        $this->stakeholders = $stakeholders;
     }
 
     public function index ($filter, Request $request, Response $response, Twig $view)
@@ -132,7 +135,22 @@ class ContactController
 
     public function add(Request $request, Response $response, Twig $view)
     {
+        //dump($request->getParams());
+        //die();
+
         $full_name = $request->getParam('contact_firstname'). " " .$request->getParam('contact_surname');
+
+        $update_type = $request->getParam('contact_type');
+
+        if($update_type == 'M'){
+            $member_id_update = $request->getParam('contact_members_id');
+            $stakeholder_id_update = 0;
+            $role = $request->getParam('contact_role');
+        } elseif($update_type == 'S'){
+            $member_id_update = 0;
+            $stakeholder_id_update = $request->getParam('contact_members_id');
+            $role = 'O';
+        }
 
         $guid = $this->GUID();
         $row_version = $this->uniqidReal();
@@ -140,8 +158,9 @@ class ContactController
         $new_contact = $this->contacts->firstorcreate([
             'guid' => $guid,
             'type' => $request->getParam('contact_type'),
-            'role' => $request->getParam('contact_role'),
-            'members_id' => $request->getParam('contact_members_id'),
+            'role' => $role,
+            'members_id' => $member_id_update,
+            'stakeholders_id' => $stakeholder_id_update,
             'firstname' => $request->getParam('contact_firstname'),
             'surname' => $request->getParam('contact_surname'),
             'fullname' => $full_name,
@@ -155,19 +174,38 @@ class ContactController
         ]);
 
         //UPDATE THE PRIMARY CONTACT FOR THE MEMBER
-        if($request->getParam('contact_role') == 'P') {
-            //UPDATE ANY REPLACED PRIMARY CONTACT TO OTHER CONTACT TYPE
-            $this->contacts->where('role', "P")
-                ->where('members_id', $request->getParam('contact_members_id'))
-                ->where('id', '<>', $new_contact)
-                ->update([
-                    'role' => "O",
-            ]);
+        if($role == 'P') {
 
-            $this->members->where('id', $request->getParam('contact_members_id'))
+            if($update_type == 'M') {
+                //UPDATE ANY REPLACED PRIMARY CONTACT TO OTHER CONTACT TYPE
+                $this->contacts->where('role', "P")
+                    ->where('members_id', $member_id_update)
+                    ->where('id', '<>', $new_contact->id)
+                    ->update([
+                        'role' => "O",
+                 ]);
+
+                $this->members->where('id', $member_id_update)
+                    ->update([
+                        'primary_contact' => $new_contact->id,
+                ]);
+
+            } elseif($update_type == 'S') {
+
+                //UPDATE ANY REPLACED PRIMARY CONTACT TO OTHER CONTACT TYPE
+                $this->contacts->where('role', "P")
+                    ->where('members_id', $stakeholder_id_update)
+                    ->where('id', '<>', $new_contact)
+                    ->update([
+                        'role' => "O",
+                ]);
+
+                $this->stakeholders->where('id', $stakeholder_id_update)
                 ->update([
-                'primary_contact' => $request->getParam('contact_id'),
-            ]);
+                    'primary_contact' => $new_contact,
+                ]);
+            }
+
         } else {
             $num_primary = $this->contacts->where(['role' => 'P', 'members_id' => $request->getParam('contact_members_id')])->count();
         }
@@ -181,12 +219,21 @@ class ContactController
     {
         $full_name = $request->getParam('contact_firstname'). " " .$request->getParam('contact_surname');
 
-        //dump("JOURNAL:", $request->getParam('contact_journal'));
-        //die();
+        $update_type = $request->getParam('contact_type');
+
+        if($update_type == 'M'){
+            $member_id_update = $request->getParam('contact_members_id');
+            $stakeholder_id_update = 0;
+            $role = $request->getParam('contact_role');
+        } elseif($update_type == 'S'){
+            $member_id_update = 0;
+            $stakeholder_id_update = $request->getParam('contact_members_id');
+            $role = 'O';
+        }
 
         $this->contacts->where('id', $request->getParam('contact_id'))
             ->update([
-                'role' => $request->getParam('contact_role'),
+                'role' => $role,
                 'firstname' => $request->getParam('contact_firstname'),
                 'surname' => $request->getParam('contact_surname'),
                 'fullname' => $full_name,
@@ -199,19 +246,39 @@ class ContactController
             ]);
 
         //UPDATE THE PRIMARY CONTACT FOR THE MEMBER
-        if($request->getParam('contact_role') == 'P') {
-            //UPDATE ANY REPLACED PRIMARY CONTACT TO OTHER CONTACT TYPE
-            $this->contacts->where('role', "P")
-                ->where('members_id', $request->getParam('contact_members_id'))
-                ->where('id', '<>', $request->getParam('contact_id'))
-                ->update([
-                    'role' => "O",
-                ]);
+        if($role == 'P') {
 
-            $this->members->where('id', $request->getParam('contact_members_id'))
-                ->update([
-                    'primary_contact' => $request->getParam('contact_id'),
-                ]);
+            if($update_type == 'M') {
+
+                //UPDATE ANY REPLACED PRIMARY CONTACT TO OTHER CONTACT TYPE
+                $this->contacts->where('role', "P")
+                    ->where('members_id', $member_id_update)
+                    ->where('id', '<>', $request->getParam('contact_id'))
+                    ->update([
+                        'role' => "O",
+                    ]);
+
+                $this->members->where('id', $member_id_update)
+                    ->update([
+                        'primary_contact' => $request->getParam('contact_id'),
+                    ]);
+
+            } elseif($update_type == 'S') {
+
+                //UPDATE ANY REPLACED PRIMARY CONTACT TO OTHER CONTACT TYPE
+                $this->contacts->where('role', "P")
+                    ->where('members_id', $stakeholder_id_update)
+                    ->where('id', '<>', $request->getParam('contact_id'))
+                    ->update([
+                        'role' => "O",
+                    ]);
+
+                $this->stakeholders->where('id', $stakeholder_id_update)
+                    ->update([
+                        'primary_contact' => $request->getParam('contact_id'),
+                    ]);
+            }
+
         } else {
             $num_primary = $this->contacts->where(['role' => 'P', 'members_id' => $request->getParam('contact_members_id')])->count();
         }

@@ -110,7 +110,7 @@ $(document).ready(function() {
         }
         //console.log(encodeURI(filterQueryString));
 
-        window.location.href = 'http://localhost/~allanhyde/authentication/public/contacts/list/' + filterQueryString;
+        window.location.href = 'http://localhost/~allanhyde/dev_mpa/public/contacts/list/' + filterQueryString;
     }
 
     $.validator.setDefaults({
@@ -154,18 +154,30 @@ $(document).ready(function() {
     $("#add_contact").click(function() {
 
         var memberID = $("#member_id").val();
+        var updateType = $("#update_type").val();
+        $("#contact_type").val(updateType);
+
+        alert("MID: " + memberID + " UDT: " + updateType);
 
         $(".form-group").removeClass('has-error');
         $(".help-block").html('');
 
         $("#contact_members_id").val(memberID);
         $('#contact_form')[0].reset();
+
+
         $('#role_o').parent().addClass('active');
         //SET THE DEFAULT VALUE
         $('#role_o').prop('checked', true);
         $('#journal_y').parent().addClass('active');
         //SET THE DEFAULT VALUE
         $('#journal_y').prop('checked', true);;
+
+        if(updateType == 'S') {
+            alert("disabling");
+            $('#role_p').prop('disabled', true);
+            $('#role_v').prop('disabled', true);
+        }
 
         $('#contact_update_dialog').dialog({
                 buttons: {
@@ -221,12 +233,16 @@ $(document).ready(function() {
                             var datastring = $("#contact_form").serialize();
 
                             $.ajax({
-                                url: 'http://localhost/~allanhyde/authentication/public/contact/add',
+                                url: 'http://localhost/~allanhyde/dev_mpa/public/contact/add',
                                 type: "post",
                                 data: datastring,
                                 success: function (response) {
                                     //alert("RESP: " + JSON.stringify(response));
-                                    window.location.href = 'http://localhost/~allanhyde/dev_mpa/public/members/edit/' + memberID;
+                                    if(updateType == 'M') {
+                                        window.location.href = 'http://localhost/~allanhyde/dev_mpa/public/members/edit/' + memberID;
+                                    } else if(updateType == 'S') {
+                                        window.location.href = 'http://localhost/~allanhyde/dev_mpa/public/stakeholder/edit/' + memberID;
+                                    }
                                 },
                                 error: function (jqXHR, textStatus, errorThrown) {
                                     console.log(textStatus, errorThrown);
@@ -252,6 +268,9 @@ $(document).ready(function() {
 
         var updateSource = $("#update_source").val();
         //alert("UPS SRC: " + updateSource);
+
+        var updateType = $("#update_type").val();
+        $("#contact_type").val(updateType);
 
         if(updateSource === 'C') {
             //UPDATE SOURCE IS CONTACT EDIT
@@ -301,7 +320,7 @@ $(document).ready(function() {
         var csrfData = {"csrf_name" : csrfName,"csrf_value" : csrfValue};
 
         $.ajax({
-            url: "http://localhost/~allanhyde/authentication/public/contact/get/" + contactID,
+            url: "http://localhost/~allanhyde/dev_mpa/public/contact/get/" + contactID,
             type: "get",
             data: csrfData ,
             success: function (response) {
@@ -375,17 +394,20 @@ $(document).ready(function() {
 
                             if ($("#contact_form").valid()) {
                                 var datastring = $("#contact_form").serialize();
-                                //alert("DATA: " + datastring);
                                 $.ajax({
-                                    url: "http://localhost/~allanhyde/authentication/public/contact/edit/" + contactID,
+                                    url: "http://localhost/~allanhyde/dev_mpa/public/contact/edit/" + contactID,
                                     type: "post",
                                     data: datastring,
                                     success: function (response) {
 
                                         if(updateSource === 'C') {
-                                            window.location.href = 'http://localhost/~allanhyde/authentication/public/contacts/list/' + contactsFilter;
+                                            window.location.href = 'http://localhost/~allanhyde/dev_mpa/public/contacts/list/' + contactsFilter;
                                         } else {
-                                            window.location.href = 'http://localhost/~allanhyde/authentication/public/members/edit/' + memberID;
+                                            if(updateType == 'M') {
+                                                window.location.href = 'http://localhost/~allanhyde/dev_mpa/public/members/edit/' + memberID;
+                                            } else if(updateType == 'S') {
+                                                window.location.href = 'http://localhost/~allanhyde/dev_mpa/public/stakeholder/edit/' + memberID;
+                                            }
                                         }
                                     },
                                     error: function (jqXHR, textStatus, errorThrown) {
@@ -409,7 +431,7 @@ $(document).ready(function() {
     });
 
     $("#select_contact").autocomplete({
-        source: 'http://localhost/~allanhyde/authentication/public/contacts/auto',
+        source: 'http://localhost/~allanhyde/dev_mpa/public/contacts/auto',
         minLength: 3,
         delay: 10,
         search: function(){
@@ -420,11 +442,11 @@ $(document).ready(function() {
     });
 
     function getContactDets(item){
-        window.location.href = 'http://localhost/~allanhyde/authentication/public/contacts/name/' + item;
+        window.location.href = 'http://localhost/~allanhyde/dev_mpa/public/contacts/name/' + item;
     }
 
     $("#select_member").autocomplete({
-        source: 'http://localhost/~allanhyde/authentication/public/members/auto',
+        source: 'http://localhost/~allanhyde/dev_mpa/public/members/auto',
         minLength: 3,
         delay: 10,
         search: function(){
@@ -438,7 +460,7 @@ $(document).ready(function() {
         //alert("ITEM: " + item);
 
         $.ajax({
-            url: 'http://localhost/~allanhyde/authentication/public/contacts/member/' + item,
+            url: 'http://localhost/~allanhyde/dev_mpa/public/contacts/member/' + item,
             type: "GET",
             //data: datastring,
             success: function (response) {

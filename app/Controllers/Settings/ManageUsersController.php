@@ -16,7 +16,6 @@ use App\Validation\Forms\UserForm;
 
 class ManageUsersController
 {
-
     protected $router;
     protected $validator;
     protected $flash;
@@ -27,21 +26,14 @@ class ManageUsersController
         $this->router = $router;
         $this->validator = $validator;
         $this->flash = $flash;
-        //$this->guard = $guard;
-
-        //dump($guard);
-
-        //die();
     }
 
     public function index(Request $request, Response $response, Twig $view, MpaUser $mpauser, UserStatus $user_status)
     {
         $this->flash->getMessages();
-
         $users = $mpauser->getUsers();
 
-        return $view->render($response, 'settings/manage.users.main.twig', [
-
+        return $view->render($response, 'settings/manage.users.index.twig', [
             'js_script' => 'manageusers',
             'users' => $users,
 
@@ -51,7 +43,6 @@ class ManageUsersController
     public function newUser(Request $request, Response $response, Twig $view, MpaUser $mpauser)
     {
         return $view->render($response, 'settings/new.user.twig', [
-
             'mode' => 'add',
             'js_script' => 'manageusers'
 
@@ -92,7 +83,6 @@ class ManageUsersController
         $user = $mpauser->where('id', $id)->get()->first();
 
         return $view->render($response, 'settings/new.user.twig', [
-
             'mode' => 'edit',
             'js_script' => 'manageusers',
             'user' => $user
